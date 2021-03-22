@@ -5,7 +5,8 @@ export const LOGOUT = "LOGOUT";
 export const COUNTRIES = "COUNTRIES";
 export const FETCH_STATE = 'FETCH_STATE'
 import { AsyncStorage } from "react-native";
-const Api = 'http://skybluewholesale.com:80/'
+import { NavigationActions, StackActions } from "react-navigation";
+const Api = 'http://skybluewholesale.com:80/';
 
 
 // demo Login starts here
@@ -247,6 +248,14 @@ export const Authenticate = (resData) => {
     });
   };
 };
+
+
+export const resetAction = StackActions.reset({
+  index: 0,
+  actions: [NavigationActions.navigate({ routeName: "Home" })],
+  key: null,
+});
+
 
 const saveDataToStorage = (userData) => {
     AsyncStorage.setItem(

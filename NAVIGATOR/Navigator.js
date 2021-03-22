@@ -3,13 +3,20 @@ import React from "react";
 import { View, Text } from "react-native";
 import ImageComp from "../COMPONENTS/UI/Image";
 import * as tabFunc from "../COMPONENTS/TabComponent";
-import { AntDesign , Feather , Ionicons } from "@expo/vector-icons";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 
 // IMPORTS OF ALL NAVIGATIONS
 import { NavigationContainer, useIsFocused } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createSwitchNavigator } from "react-navigation";
+import { NavigationActions, StackActions } from "react-navigation";
+
+const resetAction = StackActions.reset({
+  index: 0,
+  actions: [NavigationActions.navigate({ routeName: "Home" })],
+  key: null,
+});
 
 // IMPORTS OF NAVIGATION ENDS HERE
 
@@ -208,7 +215,11 @@ const MainTabFunc = ({ route, navigation }) => {
       tabBarOptions={{
         activeTintColor: colors.DarkGrey,
         inactiveTintColor: "white",
-        style: { backgroundColor: colors.Blue, borderTopColor: colors.Blue, height: "7%", },
+        style: {
+          backgroundColor: colors.Blue,
+          borderTopColor: colors.Blue,
+          height: "7%",
+        },
         labelStyle: { fontFamily: "Bold", textTransform: "uppercase" },
       }}
     >
@@ -231,7 +242,7 @@ const MainTabFunc = ({ route, navigation }) => {
           ),
           tabBarIcon: (props) => (
             <AntDesign name="search1" size={props.size} color={props.color} />
-          )
+          ),
         })}
         name="Shop"
         component={ShopNavigatorFunc}
@@ -242,7 +253,11 @@ const MainTabFunc = ({ route, navigation }) => {
             <Text style={{ color: props.color, fontWeight: "bold" }}>Bag</Text>
           ),
           tabBarIcon: (props) => (
-            <Feather name="shopping-bag" size={props.size} color={props.color} />
+            <Feather
+              name="shopping-bag"
+              size={props.size}
+              color={props.color}
+            />
           ),
           unmountOnBlur: true,
         })}
@@ -252,11 +267,17 @@ const MainTabFunc = ({ route, navigation }) => {
       <MainTab.Screen
         options={({ route }) => ({
           tabBarLabel: (props) => (
-            <Text style={{ color: props.color, fontWeight: "bold" }}>Account</Text>
+            <Text style={{ color: props.color, fontWeight: "bold" }}>
+              Account
+            </Text>
           ),
           tabBarIcon: (props) => (
-            <Ionicons name="person-outline" size={props.size} color={props.color} />
-          )
+            <Ionicons
+              name="person-outline"
+              size={props.size}
+              color={props.color}
+            />
+          ),
         })}
         name="Account"
         component={AccountNavigatorFunc}

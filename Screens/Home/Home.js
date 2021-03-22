@@ -58,6 +58,7 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     fetchCategories();
     fetchRecentProducts();
+    // await dispatch(authActions.resetAction())
   }, []);
 
 
