@@ -1,16 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import Loader from "../../COMPONENTS/Loader";
 
 import { useSelector, useDispatch } from "react-redux";
-import * as cartAction from '../../Redux/Action/Cart'
-import ImageComp from '../../COMPONENTS/UI/Image'
-import {colors as Color} from '../../Constant'
+import * as cartAction from "../../Redux/Action/Cart";
+import ImageComp from "../../COMPONENTS/UI/Image";
+import { colors as Color } from "../../Constant";
 
-const OrderListing = props => {
+const OrderListing = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [fetch, setFetch] = useState(false);
-  const Orders = useSelector(state => state.Cart.order);
-  console.log(Orders);
+  const Orders = useSelector((state) => state.Cart.order);
+  // console.log(Orders);
   const dispatch = useDispatch();
 
   const fetchingOrder = useCallback(async () => {
@@ -24,21 +25,10 @@ const OrderListing = props => {
     fetchingOrder();
   }, []);
 
-  if (isLoading === true) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size={55} color={Color.primary} />
-        <Text>Please wait..</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={{ flex: 1 }}>
-     
-
       <View style={{ flex: 1 }}>
-        {fetch === true ? (
+        {fetch === true && (
           <FlatList
             data={Orders}
             keyExtractor={(item, index) => index.toString()}
@@ -49,7 +39,7 @@ const OrderListing = props => {
                   paddingVertical: 30,
                   borderBottomColor: "#e5e5e5",
                   borderBottomWidth: 1,
-                  paddingHorizontal: 15
+                  paddingHorizontal: 15,
                 }}
               >
                 <View
@@ -57,7 +47,7 @@ const OrderListing = props => {
                     width: "100%",
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    marginBottom: 12
+                    marginBottom: 12,
                   }}
                 >
                   <Text style={{ fontSize: 19, color: "#484848" }}>
@@ -66,8 +56,7 @@ const OrderListing = props => {
                   <ImageComp
                     onPress={() =>
                       props.navigation.navigate("OrderDetailed", {
-                      
-                        order: item
+                        order: item,
                       })
                     }
                     Icon
@@ -83,7 +72,7 @@ const OrderListing = props => {
                   style={{
                     width: "100%",
                     flexDirection: "row",
-                    paddingTop: 15
+                    paddingTop: 15,
                   }}
                 >
                   <View style={{ width: "50%" }}>
@@ -93,21 +82,18 @@ const OrderListing = props => {
                     </Text>
                   </View>
                   <View style={{ width: "50%" }}>
-                  <Text style={{ color: "#a7a7a7" }}>Date:</Text>
+                    <Text style={{ color: "#a7a7a7" }}>Date:</Text>
                     <Text style={{ fontSize: 16, marginTop: 5 }}>
-                      {item.CreatedOn.slice(0,10)}
+                      {item.CreatedOn.slice(0, 10)}
                     </Text>
                   </View>
                 </View>
               </View>
             )}
           />
-        ) : (
-          <View style={{ flex: 1 }}>
-            <ActivityIndicator size={26} color="black" />
-          </View>
         )}
       </View>
+      {isLoading && <Loader />}
     </View>
   );
 };

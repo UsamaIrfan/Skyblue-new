@@ -1,13 +1,11 @@
 import React, { useState, useCallback } from "react";
 import { View, Image, TouchableOpacity, Text, Dimensions } from "react-native";
-import {colors} from "../../Constant";
-import {ImageComp} from '../UI/Image'
+import { colors } from "../../Constant";
+import { ImageComp } from "../UI/Image";
 
+const { width, height } = Dimensions.get("window");
 
-const {width, height} = Dimensions.get('window')
-
-
-const ProductListing = props => {
+const ProductListing = (props) => {
   // const [isFav, setIsFav] = useState({});
 
   // const dispatch = useDispatch();
@@ -23,17 +21,31 @@ const ProductListing = props => {
   //   },
   //   [dispatch]
   // );
-  console.log("Image URI ==>",props.imageUri.uri)
+  console.log("Image URI ==>", props.imageUri.uri);
   return (
-    <View style={{ width: width / 2.5, marginBottom: 20, marginRight: props.Listing ? 0 : 20 }}>
+    <View
+      style={{
+        backgroundColor: "#fff",
+        width: width / 2.5,
+        marginBottom: 20,
+        marginRight: props.Listing ? 0 : 20,
+        maxHeight: 300,
+        minHeight: 280,
+        borderRadius: 10,
+      }}
+    >
       <TouchableOpacity
         onPress={props.onPress}
+        activeOpacity={0.5}
         style={{
+          maxHeight: 190,
+          padding: 5,
           width: "100%",
           height: width / 2.5,
+          flex: 1,
           backgroundColor: "white",
           borderRadius: 7,
-          overflow:'hidden'
+          overflow: "hidden",
         }}
       >
         <Image
@@ -41,9 +53,9 @@ const ProductListing = props => {
             width: null,
             height: null,
             resizeMode: "contain",
-            flex: 1
+            flex: 1,
           }}
-          source={{uri: props.imageUri.uri}}
+          source={{ uri: props.imageUri.uri }}
         />
         {/* <TouchableOpacity
         //   onPress={() => FavHandler(props.prod)}
@@ -70,16 +82,25 @@ const ProductListing = props => {
           />
         </TouchableOpacity> */}
       </TouchableOpacity>
-      <View style={{ alignItems: "flex-start", marginTop: 15, paddingRight: 10 }}>
+      <View
+        style={{
+          paddingBottom: 5,
+          paddingHorizontal: 5,
+          alignItems: "flex-start",
+          marginTop: 15,
+          paddingRight: 10,
+        }}
+      >
         <Text
           numberOfLines={2}
           style={{
             fontSize: 14,
 
             marginBottom: 7,
-            color: "#484848",
-            fontFamily:'Regular',
-            lineHeight:18
+            color: colors.Blue,
+            fontFamily: "Regular",
+            lineHeight: 18,
+            fontWeight: "bold",
           }}
         >
           {props.title}
@@ -90,7 +111,7 @@ const ProductListing = props => {
             fontSize: 14,
             marginTop: 3,
             marginBottom: 3,
-            fontFamily:'Regular'
+            fontFamily: "Regular",
           }}
         >
           {props.description}
@@ -102,38 +123,37 @@ const ProductListing = props => {
 
             width: "100%",
             justifyContent: "space-between",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <Text
             style={{
-              fontWeight: "700",
               fontSize: 15,
               color: colors.primary,
               marginRight: 8,
-              fontFamily:'Bold'
+              fontFamily: "Bold",
             }}
           >
             {props.price}
           </Text>
           <TouchableOpacity onPress={props.onPressSec}>
-          <Image
-          style={{
-            width: props.widthSec,
-            height: props.heightSec,
-            resizeMode: "contain",
-            flex: 1
-          }}
-          source={props.imageUriSec}
-        />
-        </TouchableOpacity>
-         
+            <Image
+              style={{
+                width: props.widthSec,
+                height: props.heightSec,
+                resizeMode: "contain",
+                flex: 1,
+              }}
+              source={props.imageUriSec}
+            />
+          </TouchableOpacity>
+
           {props.discount ? (
             <Text
               style={{
                 fontWeight: "600",
                 fontSize: 14,
-                color: "#A7A7A7"
+                color: "#A7A7A7",
               }}
             >
               {props.discount}

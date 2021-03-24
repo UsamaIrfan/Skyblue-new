@@ -100,7 +100,6 @@ import { cos } from "react-native-reanimated";
 
 
     const fetchCountries = useSelector((state) => state.Auth.Countries);
-    console.log(fetchCountries)
 
     const fetchState = useSelector((state) => state.Auth.StatesProvince);
    
@@ -202,7 +201,6 @@ import { cos } from "react-native-reanimated";
 
   const calendarHandler = () => {
     setCalendar(calendar === true ? false : true);
-    console.log(calendar);
   };
 
 
@@ -281,7 +279,7 @@ import { cos } from "react-native-reanimated";
         }
       }
       else{
-        console.log('not work')
+        console.log('not working ...')
       }
       
     };

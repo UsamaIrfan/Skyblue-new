@@ -1,8 +1,14 @@
+import { AntDesign, FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons, Feather } from '@expo/vector-icons'; 
+
 export const colors = {
   Black: "#000000",
-  Blue: "#2190f8",
+  Blue: "#3162DA",
   Red: "#ee342b",
   Green: "#6ac70f",
   Grey: "#8e8e8e",
-  DarkGrey: '#474747'
+  DarkGrey: '#474747',
+  Accent: "#FFCF0D",
+  White: "#fff",
 };
+
+export { AntDesign, FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons, Feather }

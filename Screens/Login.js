@@ -123,7 +123,6 @@ const Login = ({ navigation, route }) => {
   };
 
   const fetchCountryHandler = async () => {
-    console.log("Someone Called");
     await dispatcher(authActions.fetchCountry());
   };
 

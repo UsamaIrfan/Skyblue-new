@@ -67,7 +67,7 @@ const InputDesp = (props) => {
 
   const onLostFocus = () => {
     setIsFieldFocused(false);
-    console.log("i called");
+    // console.log("i called");
     fieldDispatch({ type: LOST_FOCUS });
   };
 

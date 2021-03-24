@@ -5,7 +5,7 @@ import {colors as Color, colors} from "../../Constant";
 
 const CartProductRow = props => {
   // console.log(quantityalraedy);
-  console.log(props.quantity);
+  // console.log(props.quantity);
   const [quantity, setQuantity] = useState();
   const [subquantity, setsubQuantity] = useState(0);
   const [isAdd, setIsAdd] = useState(false);
@@ -28,10 +28,10 @@ const CartProductRow = props => {
       if (props.checkout) {
         return;
       }
-      console.log("i m called");
-      console.log(quantity);
-      console.log(subquantity);
-      console.log(quan);
+      // console.log("i m called");
+      // console.log(quantity);
+      // console.log(subquantity);
+      // console.log(quan);
       if (quan === "minus") {
         if (quantity > 0) {
           setQuantity(quantity - 1);
@@ -39,8 +39,6 @@ const CartProductRow = props => {
           quantemp = quantity - 1;
         }
       } else {
-        console.log("m running");
-
         setsubQuantity(subquantity + 1);
         setQuantity(quantity + 1);
         quantemp = quantity + 1;

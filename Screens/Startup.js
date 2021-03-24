@@ -4,17 +4,33 @@ import {
   ActivityIndicator,
   StyleSheet,
   AsyncStorage,
+  AsyncStorage,
   Text
 } from "react-native";
 import { useDispatch } from "react-redux";
 
 import * as authActions from "../Redux/Action/Auth";
+import * as productAction from "../Redux/Action/Products";
+import DashBoardSkeleton from "../COMPONENTS/Skeletons/DashboardSkull"
 
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const StartupScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
-  const [isVisible, setIsVisible] = useState(false)
+
+  const fetchCategories = async () => {
+    await dispatch(productAction.fetchCategoriesFunc());
+    await dispatch(productAction.fetchSliderImages());
+  };
+
+  const fetchRecentProducts = async () => {
+    await dispatch(productAction.getRecentProducts());
+  };
+
+  // FETCH COUNTRIES
+  const fetchCountryHandler = async () => {
+    await dispatch(authActions.fetchCountry());
+  };
 
   useEffect(() => {
     const tryLogin = async () => {
@@ -41,7 +57,10 @@ const StartupScreen = ({ route, navigation }) => {
     };
 
     tryLogin();
-  }, [dispatch]);
+    fetchCountryHandler();
+    fetchCategories();
+    fetchRecentProducts();
+  }, []);
 
   useEffect(() => {
 
@@ -79,7 +98,7 @@ const StartupScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.screen}>
-      
+      <DashBoardSkeleton />
     </View>
   );
 };

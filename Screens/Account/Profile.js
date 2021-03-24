@@ -14,35 +14,38 @@ import {
   ActivityIndicator,
   Alert,
   TextInput,
-  I18nManager
+  I18nManager,
 } from "react-native";
 import ImageComp from "../../COMPONENTS/UI/Image";
 import Input from "../../COMPONENTS/Forms/InputField";
 import Modal from "react-native-modal";
 import { ScrollView } from "react-native-gesture-handler";
-import Button from '../../COMPONENTS/Button'
-import * as authActions from '../../Redux/Action/Auth'
-import {useDispatch, useSelector} from 'react-redux'
-import CalendarPicker from "react-native-calendar-picker";
+import Button from "../../COMPONENTS/Button";
+import * as authActions from "../../Redux/Action/Auth";
+import { useDispatch, useSelector } from "react-redux";
 
-
-import {colors} from '../../Constant'
+import { colors } from "../../Constant";
 import { cos } from "react-native-reanimated";
 
 const Countries = [
   {
-    id:2, code: '+1', uri: require('../../assets/Icons/canada.png'),
+    id: 2,
+    code: "+1",
+    uri: require("../../assets/Icons/canada.png"),
   },
-  {id:1, code: '+811', uri: require('../../assets/Icons/united-states.png'),
-  },
- 
+  { id: 1, code: "+811", uri: require("../../assets/Icons/united-states.png") },
+
   {
-    id:3, code: '+972', uri: require('../../assets/Icons/canada.png')
+    id: 3,
+    code: "+972",
+    uri: require("../../assets/Icons/canada.png"),
   },
   {
-    id:4, code: '+966', uri: require('../../assets/Icons/saudi-arabia.png')
-  }
-]
+    id: 4,
+    code: "+966",
+    uri: require("../../assets/Icons/saudi-arabia.png"),
+  },
+];
 
 const LOGIN = "LOGIN";
 
@@ -54,7 +57,7 @@ const formReducer = (state, action) => {
         ...state.InputValues,
         [action.inputId]: action.value,
       };
-      console.log(updateValues);
+      // console.log(updateValues);
 
       const updateValidities = {
         ...state.InputValidates,
@@ -81,15 +84,17 @@ const Sizes = ["Small", "Medium", "Large", "Very Large"];
 const UserInfo = ({ navigation, route }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isInvitationVisible, setIsInvitationVisible] = useState(false);
-  const [isLaoding, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [imageName, setImageName] = useState("");
   const [imageType, setImageType] = useState("");
   const [imageUri, setImageUri] = useState("");
   const [countrySelect, setCountrySelect] = useState(false);
-  const [selectedCountryCode, setSelectedCountryCode] = useState('');
-  const [selectedCountryUri, setSelectedCountryUri] = useState(require("../../assets/Icons/phone-list.png"));
- 
-  const [gender, setGender] = useState('')
+  const [selectedCountryCode, setSelectedCountryCode] = useState("");
+  const [selectedCountryUri, setSelectedCountryUri] = useState(
+    require("../../assets/Icons/phone-list.png")
+  );
+
+  const [gender, setGender] = useState("");
   const [isStateLoading, setStateLoading] = useState(false);
 
   // ADDRESS STATES
@@ -98,26 +103,24 @@ const UserInfo = ({ navigation, route }) => {
   const [stateName, setStateName] = useState("Select State/Province");
   const [stateId, setStateId] = useState(0);
 
-  const ProfileInfo = useSelector(state=>state.Auth.Info)
-  const [MobileNumber, setMobileNumber] = useState(ProfileInfo.Phone)
+  const ProfileInfo = useSelector((state) => state.Auth.Info);
+  const [MobileNumber, setMobileNumber] = useState(ProfileInfo.Phone);
   const fetchCountries = useSelector((state) => state.Auth.Countries);
-  console.log(fetchCountries)
+  // console.log(fetchCountries);
 
   const fetchState = useSelector((state) => state.Auth.StatesProvince);
 
+  useEffect(() => {
+    const countryNameSet = fetchCountries.find(
+      (item) => item.Value === ProfileInfo?.CountryId.toString()
+    );
+    setCountryName(countryNameSet?.Text);
+    setCountryId(countryNameSet?.Value);
+  }, []);
 
-  useEffect(()=>{
-    
-    const countryNameSet = fetchCountries.find(item=> item.Value === ProfileInfo?.CountryId.toString())
-   setCountryName(countryNameSet?.Text)
-   setCountryId(countryNameSet?.Value)
-
-
-  },[])
- 
-//   States for Calendar
-const [StartDate, selectedStartDate] = useState("Select Date");
-const [calendar, setCalendar] = useState(false);
+  //   States for Calendar
+  const [StartDate, selectedStartDate] = useState("Select Date");
+  const [calendar, setCalendar] = useState(false);
 
   const [isImage, setImage] = useState(
     route.params?.productSelect ? route.params?.productSelect[0].uri : null
@@ -125,41 +128,38 @@ const [calendar, setCalendar] = useState(false);
 
   const inputHandlerMobile = useCallback(
     (value, isValid, id) => {
-     setMobileNumber(value)
+      setMobileNumber(value);
     },
     [MobileNumber]
   );
 
-    //   //   Select COuntry handler
-    const selectCountryHandler = (item) => {
-      setSelectedCountryCode(item.code);
-      setSelectedCountryUri(item.uri);
-      setCountrySelect(false);
-    };
-
+  //   //   Select COuntry handler
+  const selectCountryHandler = (item) => {
+    setSelectedCountryCode(item.code);
+    setSelectedCountryUri(item.uri);
+    setCountrySelect(false);
+  };
 
   
+
   // USE REDUCER
   const [inputState, dispatch] = useReducer(formReducer, {
     InputValues: {
-      FirstName:ProfileInfo ? ProfileInfo.FirstName : '',
-      LastName: ProfileInfo ? ProfileInfo.LastName : '',
-      
-      Street: ProfileInfo ? ProfileInfo.StreetAddress : '',
-      StreetNumber: ProfileInfo ? ProfileInfo.StreetAddress2 : '',
-      PostalCode: ProfileInfo ? ProfileInfo.PostalCode : '',
-      City: ProfileInfo ? ProfileInfo.City : '',
-      CompanyName: ProfileInfo ? ProfileInfo.CompanyName : '',
-   
-      Email: ProfileInfo ? ProfileInfo.Email : '',
-      Password: ProfileInfo ? ProfileInfo.Password : '',
-      
-     
-      
+      FirstName: ProfileInfo ? ProfileInfo.FirstName : "",
+      LastName: ProfileInfo ? ProfileInfo.LastName : "",
+
+      Street: ProfileInfo ? ProfileInfo.StreetAddress : "",
+      StreetNumber: ProfileInfo ? ProfileInfo.StreetAddress2 : "",
+      PostalCode: ProfileInfo ? ProfileInfo.PostalCode : "",
+      City: ProfileInfo ? ProfileInfo.City : "",
+      CompanyName: ProfileInfo ? ProfileInfo.CompanyName : "",
+
+      Email: ProfileInfo ? ProfileInfo.Email : "",
+      Password: ProfileInfo ? ProfileInfo.Password : "",
     },
 
     InputValidates: {
-      FirstName:true,
+      FirstName: true,
       LastName: true,
 
       Street: true,
@@ -168,12 +168,10 @@ const [calendar, setCalendar] = useState(false);
       City: true,
 
       Email: true,
-      CompanyName:true
-    
+      CompanyName: true,
     },
     formisValid: true,
   });
-
 
   // COUNTRY AND STATE LOGIN
   const stateSetHandler = async () => {
@@ -203,23 +201,19 @@ const [calendar, setCalendar] = useState(false);
 
   // END HERE
 
-  
-//   Calendaer Code Starts here
-const onDateChange = (date) => {
-  let dateExtract = date.toString().substring(0, 15);
-  console.log(dateExtract);
-  selectedStartDate(dateExtract);
+  //   Calendaer Code Starts here
+  const onDateChange = (date) => {
+    let dateExtract = date.toString().substring(0, 15);
+    // console.log(dateExtract);
+    selectedStartDate(dateExtract);
 
-  setCalendar(false);
-};
+    setCalendar(false);
+  };
 
-const calendarHandler = () => {
-  setCalendar(calendar === true ? false : true);
-  console.log(calendar);
-};
-
-
-
+  const calendarHandler = () => {
+    setCalendar(calendar === true ? false : true);
+    // console.log(calendar);
+  };
 
   const inputHandler = useCallback(
     (value, isValid, id) => {
@@ -240,26 +234,24 @@ const calendarHandler = () => {
   const dispatcher = useDispatch();
 
   const clientRegistrationHandler = async () => {
-    let CellPhone = selectedCountryCode + MobileNumber
-    console.log(CellPhone)
-    if(inputState.formisValid) {
+    let CellPhone = selectedCountryCode + MobileNumber;
+    // console.log(CellPhone);
+    if (inputState.formisValid) {
       try {
         const {
           FirstName,
-      LastName,
-      
-      Street,
-      StreetNumber,
-      PostalCode,
-      City,
-      CompanyName,
-   
-      Email,
-      Password,
-         
+          LastName,
+
+          Street,
+          StreetNumber,
+          PostalCode,
+          City,
+          CompanyName,
+
+          Email,
+          Password,
         } = inputState.InputValues;
 
-    
         setIsLoading(true);
         await dispatcher(
           authActions.profileEditHandler(
@@ -279,46 +271,37 @@ const calendarHandler = () => {
           )
         );
         setIsLoading(false);
-  
+
         Alert.alert(
           "Profile Updated!",
           "Your Profile has been sucessfully update",
           [{ text: "OK" }]
         );
-    
       } catch (err) {
         Alert.alert("Something Went Wrong!", err.message, [
           { text: "TRY AGAIN" },
         ]);
         setIsLoading(false);
       }
+    } else {
+      console.log("not work");
     }
-    else{
-      console.log('not work')
-    }
-    
   };
 
   // References for fields
 
+  const LastName = createRef(null);
+  const CompanyName = createRef(null);
+  const Street = createRef(null);
+  const StreetNumber = createRef(null);
+  const PostalCode = createRef(null);
+  const City = createRef(null);
+  const Phone = createRef(null);
+  const Email = createRef(null);
+  const Password = createRef(null);
+  const ConfirmPassword = createRef(null);
+  const Gender = createRef(null);
 
-
-    const FirstName = createRef(null);
-    const LastName = createRef(null);
-    const CompanyName = createRef(null);
-    const Street = createRef(null);
-    const StreetNumber = createRef(null);
-    const PostalCode = createRef(null);
-    const City = createRef(null);
-    const Phone = createRef(null);
-    const Email = createRef(null);
-    const Password = createRef(null);
-    const ConfirmPassword = createRef(null);
-    const Gender = createRef(null);
-
-
-
-  
   // // Start Code for Pick Image
   // // Image Upload Handler
   // const pickImage = async () => {
@@ -360,199 +343,191 @@ const calendarHandler = () => {
   //   setImageName(filename);
   //   setImageType(type);
 
+  // // SERVER CODE START FROM HERE
+  // try {
+  //   const response = await fetch(
+  //     `${Api}api/agent/add-agent-logo/${agendId}`,
+  //     {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-type": "application/json",
+  //         Authorization: "Bearer " + token,
+  //       },
+  //       body: JSON.stringify({
+  //         agentId: agendId,
+  //         clientId: 0,
+  //         documentId: 0,
+  //         name: filename,
+  //         type: type,
+  //         uri: `data:${type}; base64,${manipResult.base64}`,
+  //       }),
+  //     }
+  //   );
 
-    // // SERVER CODE START FROM HERE
-    // try {
-    //   const response = await fetch(
-    //     `${Api}api/agent/add-agent-logo/${agendId}`,
-    //     {
-    //       method: "PUT",
-    //       headers: {
-    //         "Content-type": "application/json",
-    //         Authorization: "Bearer " + token,
-    //       },
-    //       body: JSON.stringify({
-    //         agentId: agendId,
-    //         clientId: 0,
-    //         documentId: 0,
-    //         name: filename,
-    //         type: type,
-    //         uri: `data:${type}; base64,${manipResult.base64}`,
-    //       }),
-    //     }
-    //   );
+  //   if (!response.ok) {
+  //     throw new Error("Something Went Wrong");
+  //   }
 
-    //   if (!response.ok) {
-    //     throw new Error("Something Went Wrong");
-    //   }
-
-    //   const resData = await response.json();
-    //   console.log(resData);
-    // } catch (err) {
-    //   console.log(err.message);
-    //   throw err;
-    // }
+  //   const resData = await response.json();
+  //   console.log(resData);
+  // } catch (err) {
+  //   console.log(err.message);
+  //   throw err;
+  // }
   // };
   // End Code for Pick Image
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white", paddingTop:10 }}>
-
+    <View style={{ flex: 1, backgroundColor: "white", paddingTop: 10 }}>
       {/* This Modal is for COuntry and state */}
       <Modal
-            style={{ margin: 0, marginBottom: 0 }}
-            isVisible={isVisible || isInvitationVisible}
-            deviceWidth={width}
-            deviceHeight={height}
-            onBackdropPress={() => setIsVisible(false)}
-            swipeDirection="down"
-            onSwipeComplete={() => setIsVisible(false)}
-            // useNativeDriver={true}
-            // hideModalContentWhileAnimating={true}
-          >
-            {isVisible === true ? (
+        style={{ margin: 0, marginBottom: 0 }}
+        isVisible={isVisible || isInvitationVisible}
+        deviceWidth={width}
+        deviceHeight={height}
+        onBackdropPress={() => setIsVisible(false)}
+        swipeDirection="down"
+        onSwipeComplete={() => setIsVisible(false)}
+        // useNativeDriver={true}
+        // hideModalContentWhileAnimating={true}
+      >
+        {isVisible === true ? (
+          <View style={{ flex: 1, justifyContent: "flex-end", width: "100%" }}>
+            <View
+              style={{
+                width: "100%",
+                height: height - 40,
+                backgroundColor: "white",
+              }}
+            >
               <View
-                style={{ flex: 1, justifyContent: "flex-end", width: "100%" }}
+                style={{
+                  width: "100%",
+                  paddingHorizontal: 20,
+                  alignItems: "flex-end",
+                  marginTop: 20,
+                }}
               >
+                <ImageComp
+                  onPress={() => setIsVisible(false)}
+                  width={22}
+                  height={22}
+                  imageUri={require("../../assets/Icons/close.png")}
+                ></ImageComp>
+              </View>
+              <View style={{ width: "100%", alignItems: "center" }}>
+                <Text style={{ fontWeight: "700", fontSize: 20 }}>
+                  Select Country
+                </Text>
                 <View
                   style={{
                     width: "100%",
-                    height: height - 40,
-                    backgroundColor: "white",
+                    marginTop: 35,
+                    alignItems: "center",
                   }}
                 >
-                  <View
-                    style={{
-                      width: "100%",
-                      paddingHorizontal: 20,
-                      alignItems: "flex-end",
-                      marginTop: 20,
-                    }}
-                  >
-                    <ImageComp
-                      onPress={() => setIsVisible(false)}
-                      width={22}
-                      height={22}
-                      imageUri={require("../../assets/Icons/close.png")}
-                    ></ImageComp>
-                  </View>
-                  <View style={{ width: "100%", alignItems: "center" }}>
-                    <Text style={{ fontWeight: "700", fontSize: 20 }}>
-                      Select Country
-                    </Text>
-                    <View
-                      style={{
-                        width: "100%",
-                        marginTop: 35,
-                        alignItems: "center",
-                      }}
-                    >
-                      <ScrollView>
-                        {fetchCountries.map((item) => (
-                          <TouchableOpacity
-                            // onPress={() =>
-                            //   inputHandler(item, true, "BusinessType")
-                            // }
-                            onPress={() =>
-                              countrySetHandler(item.Text, item.Value)
-                            }
-                            key={item.Value}
-                            style={{
-                              width: "100%",
+                  <ScrollView>
+                    {fetchCountries.map((item) => (
+                      <TouchableOpacity
+                        // onPress={() =>
+                        //   inputHandler(item, true, "BusinessType")
+                        // }
+                        onPress={() => countrySetHandler(item.Text, item.Value)}
+                        key={item.Value}
+                        style={{
+                          width: "100%",
 
-                              alignItems: "center",
-                              justifyContent: "center",
-                              height: 50,
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontSize: 16,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: 50,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 16,
 
-                                color: "#747474",
-                              }}
-                            >
-                              {item.Text}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </ScrollView>
-                    </View>
-                  </View>
+                            color: "#747474",
+                          }}
+                        >
+                          {item.Text}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
                 </View>
               </View>
-            ) : (
+            </View>
+          </View>
+        ) : (
+          <View style={{ flex: 1, justifyContent: "flex-end", width: "100%" }}>
+            <View
+              style={{
+                width: "100%",
+                height: height - 40,
+                backgroundColor: "white",
+              }}
+            >
               <View
-                style={{ flex: 1, justifyContent: "flex-end", width: "100%" }}
+                style={{
+                  width: "100%",
+                  paddingHorizontal: 20,
+                  alignItems: "flex-end",
+                  marginTop: 20,
+                }}
               >
+                <ImageComp
+                  onPress={() => setIsInvitationVisible(false)}
+                  width={22}
+                  height={22}
+                  imageUri={require("../../assets/Icons/close.png")}
+                ></ImageComp>
+              </View>
+              <View style={{ width: "100%", alignItems: "center" }}>
+                <Text style={{ fontWeight: "700", fontSize: 20 }}>
+                  Select State
+                </Text>
                 <View
                   style={{
                     width: "100%",
-                    height: height - 40,
-                    backgroundColor: "white",
+                    marginTop: 35,
+                    alignItems: "center",
                   }}
                 >
-                  <View
-                    style={{
-                      width: "100%",
-                      paddingHorizontal: 20,
-                      alignItems: "flex-end",
-                      marginTop: 20,
-                    }}
-                  >
-                    <ImageComp
-                      onPress={() => setIsInvitationVisible(false)}
-                      width={22}
-                      height={22}
-                      imageUri={require("../../assets/Icons/close.png")}
-                    ></ImageComp>
-                  </View>
-                  <View style={{ width: "100%", alignItems: "center" }}>
-                    <Text style={{ fontWeight: "700", fontSize: 20 }}>
-                      Select State
-                    </Text>
-                    <View
-                      style={{
-                        width: "100%",
-                        marginTop: 35,
-                        alignItems: "center",
-                      }}
-                    >
-                      <ScrollView>
-                        {fetchState.map((item) => (
-                          <TouchableOpacity
-                            onPress={() => stateHandler(item.Value, item.Text)}
-                            key={item.Value}
-                            style={{
-                              width: "100%",
+                  <ScrollView>
+                    {fetchState.map((item) => (
+                      <TouchableOpacity
+                        onPress={() => stateHandler(item.Value, item.Text)}
+                        key={item.Value}
+                        style={{
+                          width: "100%",
 
-                              alignItems: "center",
-                              justifyContent: "center",
-                              height: 50,
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontSize: 16,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: 50,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 16,
 
-                                color: "#747474",
-                              }}
-                            >
-                              {item.Text}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </ScrollView>
-                    </View>
-                  </View>
+                            color: "#747474",
+                          }}
+                        >
+                          {item.Text}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
                 </View>
               </View>
-            )}
-          </Modal>
-          {/* Modal Code ends here */}
-    
-       {/* Verification Code Modal */}
-       <Modal
+            </View>
+          </View>
+        )}
+      </Modal>
+      {/* Modal Code ends here */}
+
+      {/* Verification Code Modal */}
+      <Modal
         style={{ margin: 0, marginBottom: 0 }}
         isVisible={countrySelect}
         deviceWidth={width}
@@ -563,91 +538,88 @@ const calendarHandler = () => {
         // useNativeDriver={true}
         // hideModalContentWhileAnimating={true}
       >
- 
-           <View style={{ flex: 1, justifyContent: "flex-end", width: "100%" }}>
-           <View
-             style={{
-               width: "100%",
+        <View style={{ flex: 1, justifyContent: "flex-end", width: "100%" }}>
+          <View
+            style={{
+              width: "100%",
 
-               backgroundColor: "white",
-             }}
-           >
-             <View
-               style={{
-                 width: "100%",
-                 paddingHorizontal: 20,
-                 alignItems: "flex-end",
-                 marginTop: 20,
-               }}
-             >
-               <ImageComp
-                 onPress={() => setCountrySelect(false)}
-                 width={22}
-                 height={22}
-                 imageUri={require("../../assets/Icons/close.png")}
-               ></ImageComp>
-             </View>
-             <View style={{ width: "100%", alignItems: "center" }}>
-               <Text style={{ fontWeight: "700", fontSize: 20 }}>
-                 Select Country
-               </Text>
-               <View
-                 style={{
-                   width: "100%",
-                   marginTop: 35,
-                   alignItems: "center",
-                 }}
-               >
-                 <View
-                   style={{ width: "100%", height: 150, marginBottom: 20 }}
-                 >
-                   <ScrollView>
-                     {Countries.map((item) => (
-                       <TouchableOpacity
-                         onPress={() =>
-                           selectCountryHandler(item)
-                         }
-                         key={item.id}
-                         style={{
-                           width: "100%",
-                           backgroundColor:
-                             item.code === selectedCountryCode
-                               ? "#e5e5e5"
-                               : null,
+              backgroundColor: "white",
+            }}
+          >
+            <View
+              style={{
+                width: "100%",
+                paddingHorizontal: 20,
+                alignItems: "flex-end",
+                marginTop: 20,
+              }}
+            >
+              <ImageComp
+                onPress={() => setCountrySelect(false)}
+                width={22}
+                height={22}
+                imageUri={require("../../assets/Icons/close.png")}
+              ></ImageComp>
+            </View>
+            <View style={{ width: "100%", alignItems: "center" }}>
+              <Text style={{ fontWeight: "700", fontSize: 20 }}>
+                Select Country
+              </Text>
+              <View
+                style={{
+                  width: "100%",
+                  marginTop: 35,
+                  alignItems: "center",
+                }}
+              >
+                <View style={{ width: "100%", height: 150, marginBottom: 20 }}>
+                  <ScrollView>
+                    {Countries.map((item) => (
+                      <TouchableOpacity
+                        onPress={() => selectCountryHandler(item)}
+                        key={item.id}
+                        style={{
+                          width: "100%",
+                          backgroundColor:
+                            item.code === selectedCountryCode
+                              ? "#e5e5e5"
+                              : null,
 
-                           alignItems: "center",
-                           justifyContent: "center",
-                           height: 50,
-                           flexDirection:'row'
-                         }}
-                       >
-                         <ImageComp Icon width={20} height={20} imageUri={item.uri} />
-                         <Text
-                           style={{
-                             fontSize: 16,
-                             marginLeft:15,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: 50,
+                          flexDirection: "row",
+                        }}
+                      >
+                        <ImageComp
+                          Icon
+                          width={20}
+                          height={20}
+                          imageUri={item.uri}
+                        />
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            marginLeft: 15,
 
-                             color: "#747474",
-                           }}
-                         >
-                           {item.code}
-                         </Text>
-                       </TouchableOpacity>
-                     ))}
-                   </ScrollView>
-                 </View>
-               </View>
-             </View>
-           </View>
-         </View>
-            
+                            color: "#747474",
+                          }}
+                        >
+                          {item.code}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
       </Modal>
       {/* Modal Code ends here */}
       <ScrollView>
-        <View style={{ width: "100%", marginTop:10 }}>
-   
-              
-               {/* product Dropdown */}
+        <View style={{ width: "100%", marginTop: 10 }}>
+          {/* product Dropdown */}
           <Input
             onSubmitEditing={() => LastName.current.focus()}
             Label="First Name"
@@ -658,12 +630,10 @@ const calendarHandler = () => {
             id="FirstName"
             inputFieldHandler={inputHandler}
             errorMessage="Please enter FirstName"
-       
           />
-            
-          
+
           <Input
-          ref={LastName}
+            ref={LastName}
             onSubmitEditing={() => CompanyName.current.focus()}
             Label="Last Name"
             initialValue={inputState.InputValues.LastName}
@@ -673,10 +643,9 @@ const calendarHandler = () => {
             id="LastName"
             inputFieldHandler={inputHandler}
             errorMessage="Please enter LastName"
-       
           />
-              <Input
-          ref={CompanyName}
+          <Input
+            ref={CompanyName}
             onSubmitEditing={() => Street.current.focus()}
             Label="Company Name"
             NoPlaceHolder="Full Name"
@@ -686,9 +655,8 @@ const calendarHandler = () => {
             id="CompanyName"
             inputFieldHandler={inputHandler}
             errorMessage="Please enter LastName"
-       
           />
-           {/* <Input
+          {/* <Input
            ref={DateOfBirth}
             onSubmitEditing={() => Street.current.focus()}
             Label="Date of Birth"
@@ -701,7 +669,7 @@ const calendarHandler = () => {
        
           /> */}
 
-         {/* <View style={{width:'100%'}}>
+          {/* <View style={{width:'100%'}}>
         <TouchableOpacity
           onPress={calendarHandler}
           style={{
@@ -782,8 +750,7 @@ const calendarHandler = () => {
         </View>): null}
         </View>  */}
 
-          
-            <Input
+          <Input
             ref={Street}
             onSubmitEditing={() => StreetNumber.current.focus()}
             Label="Street Address"
@@ -794,9 +761,8 @@ const calendarHandler = () => {
             id="Street"
             inputFieldHandler={inputHandler}
             errorMessage="Please enter Street:"
-       
           />
-            <Input
+          <Input
             ref={StreetNumber}
             onSubmitEditing={() => PostalCode.current.focus()}
             Label="Street Address 2"
@@ -807,10 +773,9 @@ const calendarHandler = () => {
             id="StreetNumber"
             inputFieldHandler={inputHandler}
             errorMessage="Please enter StreetNumber"
-       
           />
-           <Input
-           ref={PostalCode}
+          <Input
+            ref={PostalCode}
             onSubmitEditing={() => City.current.focus()}
             Label="Postal Code"
             NoPlaceHolder="Full Name"
@@ -820,10 +785,9 @@ const calendarHandler = () => {
             id="PostalCode"
             inputFieldHandler={inputHandler}
             errorMessage="Please enter PostalCode"
-       
           />
-           <Input
-           ref={City}
+          <Input
+            ref={City}
             onSubmitEditing={() => Phone.current.focus()}
             Label="City"
             NoPlaceHolder="Full Name"
@@ -833,24 +797,93 @@ const calendarHandler = () => {
             id="City"
             inputFieldHandler={inputHandler}
             errorMessage="Please enter City"
-       
           />
 
+          {/* Country Id Dropdown */}
+          {/* product Dropdown */}
+          <View style={{ width: "100%", alignItems: "center" }}>
+            <View style={{ width: "82%", alignItems: "flex-start" }}>
+              <Text style={{ textTransform: "uppercase", color: "#a7a7a7" }}>
+                COUNTRY
+              </Text>
+            </View>
+          </View>
 
-            {/* Country Id Dropdown */}
-              {/* product Dropdown */}
+          <TouchableOpacity
+            onPress={() => setIsVisible(true)}
+            style={{
+              width: "100%",
+              alignItems: "center",
+              paddingVertical: 5,
+              marginBottom: 7,
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 2,
+                borderBottomColor: "#e5e5e5",
+                alignItems: "center",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "85%",
+                paddingBottom: 7,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "50%",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                }}
+              >
+                <Text
+                  style={{
+                    paddingVertical: 7,
+                    paddingLeft: 8,
+                    fontSize: 17,
+                    textAlign: "left",
+                  }}
+                >
+                  {countryName}
+                </Text>
+              </View>
+              <View
+                style={{
+                  width: "50%",
+                  alignItems: "flex-end",
+                }}
+              >
+                <ImageComp
+                  Icon
+                  width={12}
+                  height={12}
+                  imageUri={require("../../assets/Icons/dropdown.png")}
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+          {/* End here Country Id Dropdown */}
+
+          {/* State Starts here */}
+
+          {fetchState.length === 1 &&
+          fetchState[0]?.Text === "address.selectstates" ? null : (
+            <View>
               <View style={{ width: "100%", alignItems: "center" }}>
-                <View style={{ width: "82%", alignItems: "flex-start" }}>
+                <View style={{ width: "80%", alignItems: "flex-start" }}>
                   <Text
-                    style={{ textTransform: "uppercase", color: "#a7a7a7" }}
+                    style={{
+                      textTransform: "uppercase",
+                      color: "#a7a7a7",
+                    }}
                   >
-                    COUNTRY
+                    STATE
                   </Text>
                 </View>
               </View>
-
               <TouchableOpacity
-                onPress={() => setIsVisible(true)}
+                onPress={() => setIsInvitationVisible(true)}
                 style={{
                   width: "100%",
                   alignItems: "center",
@@ -885,15 +918,10 @@ const calendarHandler = () => {
                         textAlign: "left",
                       }}
                     >
-                      {countryName}
+                      {stateName}
                     </Text>
                   </View>
-                  <View
-                    style={{
-                      width: "50%",
-                      alignItems: "flex-end",
-                    }}
-                  >
+                  <View style={{ width: "50%", alignItems: "flex-end" }}>
                     <ImageComp
                       Icon
                       width={12}
@@ -903,154 +931,108 @@ const calendarHandler = () => {
                   </View>
                 </View>
               </TouchableOpacity>
-              {/* End here Country Id Dropdown */}
+            </View>
+          )}
+          {/* Staete End here */}
+          {/* State End here */}
 
-
-{/* State Starts here */}
-
-{fetchState.length === 1 && fetchState[0]?.Text === 'address.selectstates' ? null : (
-                <View>
-                  <View style={{ width: "100%", alignItems: "center" }}>
-                    <View style={{ width: "80%", alignItems: "flex-start" }}>
-                      <Text
-                        style={{
-                          textTransform: "uppercase",
-                          color: "#a7a7a7",
-                        }}
-                      >
-                        STATE
-                      </Text>
-                    </View>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => setIsInvitationVisible(true)}
-                    style={{
-                      width: "100%",
-                      alignItems: "center",
-                      paddingVertical: 5,
-                      marginBottom: 7,
-                    }}
-                  >
-                    <View
-                      style={{
-                        borderBottomWidth: 2,
-                        borderBottomColor: "#e5e5e5",
-                        alignItems: "center",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        width: "85%",
-                        paddingBottom: 7,
-                      }}
-                    >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          width: "50%",
-                          alignItems: "center",
-                          justifyContent: "flex-start",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            paddingVertical: 7,
-                            paddingLeft: 8,
-                            fontSize: 17,
-                            textAlign: "left",
-                          }}
-                        >
-                          {stateName}
-                        </Text>
-                      </View>
-                      <View style={{ width: "50%", alignItems: "flex-end" }}>
-                        <ImageComp
-                          Icon
-                          width={12}
-                          height={12}
-                          imageUri={require("../../assets/Icons/dropdown.png")}
-                        />
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )}
-              {/* Staete End here */}
-{/* State End here */}
-
-
-          
-
-
-<View style={{width:'100%', alignItems:'center', marginBottom:15, marginTop:10}}>
-            <View style={{width:'95%' ,alignItems:'center'}}>
-            <View
-            style={{
-              width: "90%",
-              alignItems: "flex-start",
-            }}
-          >
-            <Text
-              style={{
-                textTransform: "uppercase",
-                fontSize: 14,
-                color: colors.Grey,
-                letterSpacing: 1.2,
-                fontFamily: "Regular",
-              }}
-            >
-              Mobile Number
-            </Text>
-          </View>
-
-          <View style={{ alignItems: "center", width:'100%' }}>
-        <View
-          style={{
-            flexDirection: "row",
-
-            borderBottomWidth: 2,
-            borderBottomColor: "#e5e5e5",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            width: "90%",
-          }}
-        >
-          <TouchableOpacity onPress={()=> setCountrySelect(true)} style={{flexDirection:'row', alignItems:'center'}}>
-            <ImageComp onPress={()=> setCountrySelect(true)} Icon width={20} height={20} imageUri={selectedCountryUri} />
-            <Text style={{fontFamily:'Bold', color:colors.DarkGrey, fontSize:16, marginLeft:6, marginRight:4}}>{selectedCountryCode}</Text>
-            <ImageComp onPress={()=> setCountrySelect(true)} Icon width={10} height={10} imageUri={require("../../assets/Icons/dropdown.png")} />
-          </TouchableOpacity>
-      
-           
-       
-          <TextInput
-          ref={Phone}
-            placeholder={null}
-            onSubmitEditing={() => Email.current.focus()}
-            keyboardType='phone-pad'
-           
-           
-            onChangeText={inputHandlerMobile}
-            // autoFocus={true}
-           
-            value={MobileNumber}
-           
+          <View
             style={{
               width: "100%",
-              paddingVertical: 7,
-              fontSize: 17,
-              textAlign: I18nManager.isRTL ? "right" : "left",
-
-              color:colors.Black,
-
-              paddingLeft: !I18nManager.isRTL ? 15 : null,
-              fontSize: 16,
-              fontFamily: "Regular",
-              letterSpacing: 0.5,
+              alignItems: "center",
+              marginBottom: 15,
+              marginTop: 10,
             }}
-          ></TextInput>
-        </View>
-        </View>
+          >
+            <View style={{ width: "95%", alignItems: "center" }}>
+              <View
+                style={{
+                  width: "90%",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Text
+                  style={{
+                    textTransform: "uppercase",
+                    fontSize: 14,
+                    color: colors.Grey,
+                    letterSpacing: 1.2,
+                    fontFamily: "Regular",
+                  }}
+                >
+                  Mobile Number
+                </Text>
+              </View>
+
+              <View style={{ alignItems: "center", width: "100%" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+
+                    borderBottomWidth: 2,
+                    borderBottomColor: "#e5e5e5",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    width: "90%",
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => setCountrySelect(true)}
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                  >
+                    <ImageComp
+                      onPress={() => setCountrySelect(true)}
+                      Icon
+                      width={20}
+                      height={20}
+                      imageUri={selectedCountryUri}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: "Bold",
+                        color: colors.DarkGrey,
+                        fontSize: 16,
+                        marginLeft: 6,
+                        marginRight: 4,
+                      }}
+                    >
+                      {selectedCountryCode}
+                    </Text>
+                    <ImageComp
+                      onPress={() => setCountrySelect(true)}
+                      Icon
+                      width={10}
+                      height={10}
+                      imageUri={require("../../assets/Icons/dropdown.png")}
+                    />
+                  </TouchableOpacity>
+
+                  <TextInput
+                    ref={Phone}
+                    placeholder={null}
+                    onSubmitEditing={() => Email.current.focus()}
+                    keyboardType="phone-pad"
+                    onChangeText={inputHandlerMobile}
+                    // autoFocus={true}
+
+                    value={MobileNumber}
+                    style={{
+                      width: "100%",
+                      paddingVertical: 7,
+                      fontSize: 17,
+                      textAlign: I18nManager.isRTL ? "right" : "left",
+
+                      color: colors.Black,
+
+                      paddingLeft: !I18nManager.isRTL ? 15 : null,
+                      fontSize: 16,
+                      fontFamily: "Regular",
+                      letterSpacing: 0.5,
+                    }}
+                  ></TextInput>
+                </View>
+              </View>
             </View>
-          
           </View>
 
           <Input
@@ -1065,7 +1047,6 @@ const calendarHandler = () => {
             id="Email"
             inputFieldHandler={inputHandler}
             errorMessage="Please enter Email"
-            
           />
           <Input
             ref={Password}
@@ -1076,11 +1057,9 @@ const calendarHandler = () => {
             returnKeyType="next"
             secureTextEntry={true}
             initialValue={inputState.InputValues.Password}
-            
             id="Password"
             inputFieldHandler={inputHandler}
             errorMessage="Please enter Password"
-          
           />
           {/* <Input
             ref={ConfirmPassword}
@@ -1108,7 +1087,7 @@ const calendarHandler = () => {
           
           /> */}
 
-{/* <View style={{width:'100%', alignItems:'center', marginBottom:15, marginTop:10}}>
+          {/* <View style={{width:'100%', alignItems:'center', marginBottom:15, marginTop:10}}>
             <View style={{width:'95%' ,alignItems:'center'}}>
             <View
             style={{
@@ -1175,21 +1154,19 @@ const calendarHandler = () => {
                 height: 55,
                 backgroundColor: !inputState.formisValid
                   ? "#a7a7a7"
-                  : "#528BD0",
+                  : colors.Blue,
 
                 justifyContent: "center",
                 alignItems: "center",
+                marginBottom: 10,
               }}
             >
-              {isLaoding ? (
+              {isLoading ? (
                 <ActivityIndicator size={20} color="white" />
               ) : (
                 <Text style={{ fontSize: 17, color: "white" }}>REGISTER</Text>
               )}
             </TouchableOpacity>
-
-
-
           </View>
         </View>
       </ScrollView>

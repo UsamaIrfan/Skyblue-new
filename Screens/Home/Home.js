@@ -4,22 +4,25 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  FlatList,
+  AsyncStorage,
+  TextInput,
+  Alert,
 } from "react-native";
 import Swiper from "react-native-swiper";
 import ImageComp from "../../COMPONENTS/UI/Image";
-import { colors } from "../../Constant";
 import ProductListing from "../../COMPONENTS/Products/ProductList";
 import { categories, products } from "../../DummyData/Categories";
 import { useSelector, useDispatch } from "react-redux";
 import * as productAction from "../../Redux/Action/Products";
+import { colors, Ionicons, FontAwesome } from "../../Constant";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import * as authActions from "../../Redux/Action/Auth";
 import * as cartActions from "../../Redux/Action/Cart";
 import { useIsFocused } from "@react-navigation/native";
-
+import List from "../../COMPONENTS/List/index";
 const { width, height } = Dimensions.get("window");
 
 const Home = ({ navigation }) => {
@@ -30,7 +33,7 @@ const Home = ({ navigation }) => {
   const isFocused = useIsFocused();
 
   const categoriesFetch = useSelector((state) => state.Product.Products);
-  // console.log(categoriesFetch.PictureUrl);
+  console.log(categoriesFetch);
 
   const sliderImages = useSelector((state) => state.Product.sliderImages);
   // console.log(sliderImages);
@@ -52,25 +55,22 @@ const Home = ({ navigation }) => {
     setIsLoading(true);
     await dispatch(productAction.getRecentProducts());
     setIsLoading(false);
-  }
+  };
 
   // FETCH CATEGORIES
   useEffect(() => {
-    fetchCategories();
     fetchRecentProducts();
     // await dispatch(authActions.resetAction())
   }, []);
 
-
   // FETCH COUNTRIES
   const fetchCountryHandler = async () => {
-    console.log("Someone Called");
     await dispatch(authActions.fetchCountry());
   };
 
-  useEffect(() => {
-    fetchCountryHandler();
-  }, []);
+  // useEffect(() => {
+  //   fetchCountryHandler();
+  // }, []);
 
   // FETCH CART COUNT
 
@@ -84,14 +84,12 @@ const Home = ({ navigation }) => {
 
   const categoriesHandler = (item) => {
     if (item.SubCategoryItems.length === 0) {
-      console.log("GO TO LISTING");
       navigation.navigate("Shop", {
         screen: "Listing",
         params: { id: item.Id, name: item.Name },
         initial: false,
       });
     } else {
-      console.log("Go to Details");
       navigation.navigate("Shop", {
         screen: "SubCategories",
         params: { id: item.Id },
@@ -100,162 +98,156 @@ const Home = ({ navigation }) => {
     }
   };
 
-  if (!isLoading&& Object.keys(categoriesFetch).length==null) {
-    console.log("working")
-    
+  if (!isLoading && Object.keys(categoriesFetch).length == null) {
+    console.log("working");
   }
 
+  const getData = () => {
+    console.log("getData");
+    alert("done");
+    // setIsLoading(true);
+    // //Service to get the data from the server to render
+    // fetch('https://aboutreact.herokuapp.com/getpost.php?offset=' + offset)
+    //   //Sending the currect offset with get request
+    //   .then((response) => response.json())
+    //   .then((responseJson) => {
+    //     //Successful response from the API Call
+    //     setOffset(offset + 1);
+    //     //After the response increasing the offset for the next API call.
+    //     setDataSource([...dataSource, ...responseJson.results]);
+    //     setIsLoading(false);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+  };
+
+  const renderItem = ({ item }) => (
+    <List
+      itemData={item}
+      navigation={navigation}
+      onSelect={() => {
+        navigation.navigate("Shop", {
+          screen: "Listing",
+          params: {id: item.Id, name: item.Name},
+          initial: false,
+        });
+      }}
+    />
+  );
+
+  const footer = () => {
+    return (
+      <View style={{ marginBottom: 60 }}>
+        <FlatList
+          data={recentProducts}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          horizontal={true}
+        />
+      </View>
+    );
+  };
+  const Header = () => {
+    return (
+      <>
+        <View
+          style={{
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingHorizontal: width * 0.03,
+          }}
+        >
+          <View style={{ ...styles.iconInput, zIndex: 3 }}>
+            <FontAwesome
+              name="search"
+              size={24}
+              color={colors.Blue}
+              style={styles.icon}
+            />
+            <TextInput style={{ flex: 1 }} placeholder="Search" />
+            <FontAwesome
+              name="filter"
+              size={24}
+              color={colors.Blue}
+              style={styles.icon}
+            />
+          </View>
+        </View>
+        <View style={{ width: width, height: 150, marginBottom: 10 }}>
+          <Swiper autoplayTimeout={1.5} autoplay={true} style={styles.wrapper}>
+            {sliderImages.map((item, index) => (
+              <View key={index} style={styles.slide1}>
+                <ImageComp
+                  width={"100%"}
+                  height={"100%"}
+                  imageUri={{ uri: item }}
+                />
+              </View>
+            ))}
+          </Swiper>
+        </View>
+      </>
+    );
+  };
+
+  const renderFooter = () => {
+    return (
+      //Footer View with Load More button
+      <View style={styles.footer}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={getData}
+          //On Click of button calling getData function to load more data
+          style={styles.loadMoreBtn}
+        >
+          <Text style={styles.btnText}>Load More</Text>
+          {isLoading ? (
+            <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
+          ) : null}
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
-    <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={{ flex: 1 }}>
-        {isLoading ? (
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            <ActivityIndicator size={25} color={colors.Blue} />
-            <Text>Please Wait...</Text>
-          </View>
-    
-        ) : (
-          <View style={{ flex: 1 }}>
-            <View style={{ width: width, height: 150 }}>
-              <Swiper autoplay={true} style={styles.wrapper}>
-                {sliderImages.map((item, index) => (
-                  <View key={index} style={styles.slide1}>
-                    <ImageComp
-                      width={"100%"}
-                      height={"100%"}
-                      imageUri={{ uri: item }}
-                    />
-                  </View>
-                ))}
-              </Swiper>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                paddingHorizontal: 15,
-                justifyContent: "space-between",
-              }}
-            >
-              {categoriesFetch.map((item, index) => (
-                <TouchableOpacity
-                  key={item.Id}
-                  onPress={() => categoriesHandler(item)}
-                  style={{
-                    width: width / 3.5,
-                    height: 125,
-                    marginTop: 25,
-                    backgroundColor: "#e5e5e5",
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-
-                    elevation: 5,
-                    borderRadius:5,
-                    overflow:'hidden'
-                  }}
-                >
-                  <View
-                    style={{
-                      width: width / 3.5,
-                      height: 100,
-                      backgroundColor: "#e5e5e5",
-                    }}
-                  >
-                    <ImageComp
-                      noPress
-                      width={"100%"}
-                      height={"100%"}
-                      imageUri={{ uri: item.PictureUrl }}
-                    />
-                  </View>
-                  <Text
-                    numberOfLines={2}
-                    style={{
-                      fontFamily: "Bold",
-                      color: "#484848",
-                      textAlign: "center",
-                      marginTop: 5,
-                      lineHeight: 18,
-                    }}
-                  >
-                    {item.Name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingHorizontal: 15,
-                paddingTop: 40,
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{ fontSize: 18, fontFamily: "Bold", color: "#484848" }}
-              >
-                Recent Products
-              </Text>
-              <Text
-                style={{ fontSize: 13, fontFamily: "Bold", color: "#484848" }}
-              >
-                VIEW ALL
-              </Text>
-            </View>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-            >
-              <View
-                style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  paddingHorizontal: 15,
-                  justifyContent: "space-between",
-                  paddingTop: 20,
-                }}
-              >
-                {recentProducts.map((item, index) => (
-                  <ProductListing
-                    //  onPress={()=> navigation.navigate('Shop',{screen:'Detailed',params:{id: item.id},initial: false})}
-                    key={index}
-                    imageUri={{ uri: item.PictureModels.DefaultPictureModel.ImageUrl }}
-                    title={item.Name}
-                    description={item.Description ? item.Description : ""}
-                    price={`$ ${item.ProductPrice.Price}`}
-                  />
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-        )}
-      </View>
-    </ScrollView>
+    <View style={{ flex: 1 }}>
+      <FlatList
+        data={categoriesFetch}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        horizontal={false}
+        numColumns={2}
+        removeClippedSubviews={true}
+        bounces={true}
+        ListFooterComponent={footer}
+        ListHeaderComponent={Header}
+        refreshing={true}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   wrapper: {},
   slide1: {
+    borderRadius: 10,
+    marginHorizontal: 10,
+    overflow: "hidden",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#9DD6EB",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+
+    elevation: 7,
   },
   slide2: {
     flex: 1,
@@ -273,6 +265,59 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 30,
     fontWeight: "bold",
+  },
+  footer: {
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  loadMoreBtn: {
+    padding: 10,
+    backgroundColor: "#800000",
+    borderRadius: 4,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  btnText: {
+    color: "white",
+    fontSize: 15,
+    textAlign: "center",
+  },
+  searchInputContainer: {
+    width: width * 0.8,
+    top: height * 0.05,
+    position: "absolute",
+    left: width / 10,
+    minHeight: height * 0.18,
+    maxHeight: height * 0.8,
+  },
+  iconInput: {
+    flexDirection: "row",
+    backgroundColor: colors.White,
+    overflow: "hidden",
+    width: "100%",
+    alignItems: "center",
+    zIndex: 1000,
+    marginVertical: height * 0.02,
+    borderRadius: 5,
+    paddingHorizontal: "2%",
+    paddingVertical: height * 0.015,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
+  },
+  icon: {
+    alignItems: "center",
+    marginHorizontal: width * 0.02,
+    alignSelf: "flex-start",
   },
 });
 

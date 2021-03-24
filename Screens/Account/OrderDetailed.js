@@ -13,7 +13,7 @@ const OrderDetailed = props => {
 
 
 const item = props.route.params?.order
-  console.log(item);
+  // console.log(item);
 
   useEffect(()=>{
     props.navigation.setOptions({
@@ -22,7 +22,6 @@ const item = props.route.params?.order
     },[])
   return (
     <View style={{ flex: 1 }}>
-    
       <ScrollView>
         <View style={{ flex: 1 }}>
           <OrderField name="Order Number" value={item.CustomOrderNumber} />

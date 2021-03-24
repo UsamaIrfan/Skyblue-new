@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity,AsyncStorage } from "react-native";
 import { colors } from "../../Constant";
+import Loader from "../../COMPONENTS/Loader";
 import ImageComp from "../../COMPONENTS/UI/Image";
 import * as authActions from "../../Redux/Action/Auth";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +12,6 @@ const template = [
   { id: 1, value: "Profile" },
   { id: 2, value: "Orders" },
   { id: 3, value: "Scan Barcode" },
-  { id: 4, value: "Logout" },
 ];
 
 const Account = ({ navigation }) => {
@@ -24,6 +24,14 @@ const Account = ({ navigation }) => {
     }
   };
 
+  const logoutHandler = async () => {
+    setIsLoading(true);
+    await AsyncStorage.removeItem("userData");
+    await dispatch(authActions.LogoutFunc());
+    setIsLoading(false);
+    navigation.navigate("Login");
+  };
+
   const isFocused = useIsFocused();
 
   const dispatch = useDispatch();
@@ -34,12 +42,16 @@ const Account = ({ navigation }) => {
     setIsLoading(false);
   };
 
+  // User Profile
+  const ProfileInfo = useSelector(state=>state.Auth.Info)
+
+
   // FETCH CATEGORIES
   useEffect(() => {
     fetchProfileInfo();
   }, [isFocused]);
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1,   }}>
       <View
         style={{
           width: "100%",
@@ -50,8 +62,8 @@ const Account = ({ navigation }) => {
           paddingBottom: 15,
         }}
       >
-        <Text style={{ fontSize: 20, fontFamily: "Bold", color: "white" }}>
-          John Smith Paul
+        <Text style={{ fontSize: 20, fontFamily: "Bold", color:'#fff' }}>
+        {ProfileInfo !== null ? `${ProfileInfo.FirstName} ${ProfileInfo.LastName}`  : ""}
         </Text>
       </View>
       <View style={{ paddingTop: 10, flex: 1 }}>
@@ -65,7 +77,6 @@ const Account = ({ navigation }) => {
               style={{
                 width: "90%",
 
-                backgroundColor: "white",
                 flexDirection: "row",
               }}
             >
@@ -142,8 +153,64 @@ const Account = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         ))}
-      </View>
+        <View
+          style={{ alignItems: "center", height: 50 }}
+        >
+          <TouchableOpacity
+              onPress={logoutHandler}
+              style={{
+              width: "90%",
 
+              flexDirection: "row",
+            }}
+          >
+            <View
+              style={{
+                width: "10%",
+
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ImageComp
+                Icon
+                width={23}
+                height={23}
+                imageUri={require("../../assets/Icons/logout.png")}
+              />
+            </View>
+
+            <View
+              style={{
+                width: "70%",
+                height: "100%",
+
+                paddingVertical: 15,
+                paddingHorizontal: 20,
+                alignItems: "flex-start",
+              }}
+            >
+              <Text style={{ fontSize: 16, color: "#747474" }}>Log Out</Text>
+            </View>
+            <View
+              style={{
+                width: "20%",
+                height: "100%",
+
+                justifyContent: "center",
+                alignItems: "flex-end",
+              }}
+            >
+              <ImageComp
+                Icon
+                width={18}
+                height={18}
+                imageUri={require("../../assets/Icons/next.png")}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
       <View
         style={{
           flex: 1,
@@ -166,6 +233,7 @@ const Account = ({ navigation }) => {
           App Version 1.0.0
         </Text>
       </View>
+      {isLoading && <Loader />}
     </View>
   );
 };

@@ -3,63 +3,66 @@ export const FETCH_CART_DATA = "FETCH_CART_DATA";
 export const DELETE_CART_PRODUCT = "DELETE_CART_PRODUCT";
 export const FETCH_ORDER = "FETCH_ORDER";
 export const FETCH_CART_COUNT = "FETCH_CART_COUNT";
+import axios from "axios";
+import Cart from "../../models/cart";
 
-import Cart from '../../models/cart'
-
+const Api = "http://skybluewholesale.com:80/";
 
 export const fetchCartData = () => {
+
   return async (dispatch, getState) => {
-    const id = getState().Auth.Login.customerId
-  
-    try {
-      const response = await fetch(
-        `http://skybluewholesale.com:80/api/CatalogApi/Cart?customerId=${id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-  
-          },
- 
-        }
-      );
-
-      if (!response.ok) {
+    const id = getState().Auth.Login.customerId;
+    await axios
+      .post(`${Api}api/CatalogApi/Cart?customerId=${id}`, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        console.log("CART ====>",response.data);
+        dispatch({
+          type: FETCH_CART_DATA,
+          CartProducts: response.data,
+        });
+        // navigation.navigate("MapMain");
+      })
+      .catch((error) => {
+        console.log(error);
         throw new Error("Product Doesnot Fetch");
-      }
-
-      const resData = await response.json();
-      // console.log(resData)
-
-      // const LoadProducts = [];
-
-      // for (let key in resData) {
-      //   LoadProducts.push(
-      //     new Cart(
-      //       key,
-      //       resData[key].id,
-      //       resData[key].title,
-      //       resData[key].imageUrl,
-      //       resData[key].price,
-      //       resData[key].discountPrice,
-
-      //       resData[key].quantity
-      //     )
-      //   );
-      // }
-
-      // console.log(LoadProducts);
-
-      dispatch({
-        type: FETCH_CART_DATA,
-        CartProducts: resData
       });
-    } catch (err) {
-      console.log(err.message);
-      throw err;
-    }
   };
 };
+
+// export const addToCart = (
+//   id,
+//   title,
+//   imageUrl,
+//   price,
+//   discountPrice,
+//   quantity
+// ) => {
+//   return async (dispatch, getState) => {
+//     const response = await fetch(
+//       `https://flower-327fe.firebaseio.com/cart/1C9JhZJcqKO3Q0wh4pqJ93OqRE02.json`,
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           id,
+//           title,
+//           imageUrl,
+//           price,
+//           discountPrice,
+//           quantity,
+//         }),
+//       }
+//     );
+
+//     if (!response.ok) {
+//       throw new Error("Product Cant be Updated Server Busy");
+//     }
+//   };
+// };
 
 export const addToCart = (
   id,
@@ -67,31 +70,28 @@ export const addToCart = (
   imageUrl,
   price,
   discountPrice,
-  quantity
+  quantity,
 ) => {
-  return async (dispatch, getState) => {
-    
-    const response = await fetch(
-      `https://flower-327fe.firebaseio.com/cart/1C9JhZJcqKO3Q0wh4pqJ93OqRE02.json`,
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json"
-        },
-        body: JSON.stringify({
-          id,
-          title,
-          imageUrl,
-          price,
-          discountPrice,
-          quantity
-        })
-      }
-    );
+  var postData = {
+    id: id,
+    title: title,
+    imageUrl: imageUrl,
+    price: price,
+    discountPrice: discountPrice,
+    quantity: quantity,
+  };
 
-    if (!response.ok) {
-      throw new Error("Product Cant be Updated Server Busy");
-    }
+  return async (dispatch) => {
+    await axios
+      .post(`https://flower-327fe.firebaseio.com/cart/1C9JhZJcqKO3Q0wh4pqJ93OqRE02.json`, postData, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+
+      })
+      .catch((error) => {
+          throw new Error("Product Cant be Updated Server Busy");
+      });
   };
 };
 
@@ -105,14 +105,12 @@ export const addToCartUpdate = (
   quantity
 ) => {
   return async (dispatch, getState) => {
-
-
     const response = await fetch(
       `https://flower-327fe.firebaseio.com/cart/1C9JhZJcqKO3Q0wh4pqJ93OqRE02/${cId}.json`,
       {
         method: "PATCH",
         headers: {
-          "Content-type": "application/json"
+          "Content-type": "application/json",
         },
         body: JSON.stringify({
           id,
@@ -120,8 +118,8 @@ export const addToCartUpdate = (
           imageUrl,
           price,
           discountPrice,
-          quantity
-        })
+          quantity,
+        }),
       }
     );
 
@@ -131,26 +129,61 @@ export const addToCartUpdate = (
   };
 };
 
-export const deleteCart = cartId => {
+// export const deleteCart = (cartId) => {
+//   return async (dispatch, getState) => {
+//     const id = getState().Auth.Login.customerId;
+//     const response = await fetch(
+//       `http://skybluewholesale.com:80/api/CatalogApi/RemoveItemFromCart?customerId=${id}&shoppingCartId=${cartId}`,
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-type": "application/json",
+//         },
+//       }
+//     );
+//     const resData = await response.json();
+//     // console.log(resData)
+
+//     // dispatch({ type: DELETE_CART_PRODUCT, cId: cId });
+//   };
+// };
+
+export const deleteCart = (cartId) => {
+  var postData = {};
+
   return async (dispatch, getState) => {
+    const id = getState().Auth.Login.customerId;
+    await axios
+      .post(`http://skybluewholesale.com:80/api/CatalogApi/RemoveItemFromCart?customerId=${id}&shoppingCartId=${cartId}`, postData, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
 
-    const id = getState().Auth.Login.customerId
-    const response = await fetch(
-      `http://skybluewholesale.com:80/api/CatalogApi/RemoveItemFromCart?customerId=${id}&shoppingCartId=${cartId}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-
-        },
-      }
-    );
-    const resData = await response.json();
-    // console.log(resData)
-
-    // dispatch({ type: DELETE_CART_PRODUCT, cId: cId });
+      })
+      .catch((error) => {
+          throw new Error("Product Cant be Updated Server Busy");
+      });
   };
 };
+
+// export const deleteCart = (cartId) => {
+//   var postData = {};
+
+//   return async (dispatch, getState) => {
+//     const id = getState().Auth.Login.customerId;
+//     await axios
+//       .post(`${Api}api/CatalogApi/RemoveItemFromCart?customerId=${id}&shoppingCartId=${cartId}`, postData, {
+//         headers: { "Content-Type": "application/json" },
+//       })
+//       .then((response) => {
+
+//       })
+//       .catch((error) => {
+//           throw new Error("Product Cant be Updated Server Busy");
+//       });
+//   };
+// };
+
 
 // export const addToOrder = (
 //   deliveryAddress,
@@ -223,59 +256,99 @@ export const deleteCart = cartId => {
 //   };
 // };
 
+// export const fetchOrder = () => {
+//   return async (dispatch, getState) => {
+//     const id = getState().Auth.Login.customerId;
+//     try {
+//       const response = await fetch(
+//         `http://skybluewholesale.com:80/api/CatalogApi/CustomerOrder?customerId=${id}`,
+//         { method: "POST" }
+//       );
+
+//       if (!response.ok) {
+//         throw new Error("Something Went Wrong");
+//       }
+
+//       const resData = await response.json();
+//       // console.log(resData)
+
+//       dispatch({
+//         type: FETCH_ORDER,
+//         Order: resData.Orders,
+//       });
+//     } catch (err) {
+//       console.log(err.message);
+//       throw err;
+//     }
+//   };
+// };
+
 export const fetchOrder = () => {
+  var postData = {};
+
   return async (dispatch, getState) => {
-    const id = getState().Auth.Login.customerId
-    try {
-      const response = await fetch(
-        `http://skybluewholesale.com:80/api/CatalogApi/CustomerOrder?customerId=${id}`,
-       { method:'POST'}
-      );
-
-      if (!response.ok) {
-        throw new Error("Something Went Wrong");
-      }
-
-      const resData = await response.json();
-      // console.log(resData)
-
-     
-      dispatch({
-        type: FETCH_ORDER,
-        Order: resData.Orders
+    const id = getState().Auth.Login.customerId;
+    await axios
+      .post(`http://skybluewholesale.com:80/api/CatalogApi/CustomerOrder?customerId=${id}`, postData, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        dispatch({
+          type: FETCH_ORDER,
+          Order: response.data.Orders,
+        });
+      })
+      .catch((error) => {
+        throw new Error("Something Went Wrong While Getting Orders.");
       });
-    } catch (err) {
-      console.log(err.message);
-      throw err;
-    }
   };
 };
 
+// export const fetchCountCart = () => {
+//   return async (dispatch, getState) => {
+//     const id = getState().Auth.Login.customerId;
+//     try {
+//       const response = await fetch(
+//         `http://skybluewholesale.com:80/api/CatalogApi/CartCount?customerId=${id}`,
+//         { method: "POST" }
+//       );
+
+//       if (!response.ok) {
+//         throw new Error("Something Went Wrong");
+//       }
+
+//       const resData = await response.json();
+//       // console.log(resData)
+
+//       dispatch({
+//         type: FETCH_CART_COUNT,
+//         Count: resData.Count,
+//       });
+//     } catch (err) {
+//       console.log(err.message);
+//       throw err;
+//     }
+//   };
+// };
 
 export const fetchCountCart = () => {
+  var postData = {};
+
   return async (dispatch, getState) => {
-    const id = getState().Auth.Login.customerId
-    try {
-      const response = await fetch(
-        `http://skybluewholesale.com:80/api/CatalogApi/CartCount?customerId=${id}`,
-       { method:'POST'}
-      );
-
-      if (!response.ok) {
-        throw new Error("Something Went Wrong");
-      }
-
-      const resData = await response.json();
-      // console.log(resData)
-
-     
-      dispatch({
-        type: FETCH_CART_COUNT,
-        Count: resData.Count
+    const id = getState().Auth.Login.customerId;
+    await axios
+      .post(`http://skybluewholesale.com:80/api/CatalogApi/CartCount?customerId=${id}`, postData, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        dispatch({
+          type: FETCH_CART_COUNT,
+          Count: response.data.Count,
+        });
+      })
+      .catch((error) => {
+        throw error;
+        throw new Error("Something Went Wrong While Getting cart Count.");
       });
-    } catch (err) {
-      console.log(err.message);
-      throw err;
-    }
   };
 };
