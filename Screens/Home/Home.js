@@ -127,11 +127,19 @@ const Home = ({ navigation }) => {
       itemData={item}
       navigation={navigation}
       onSelect={() => {
-        navigation.navigate("Shop", {
-          screen: "Listing",
-          params: {id: item.Id, name: item.Name},
-          initial: false,
-        });
+        if (item.SubCategoryItems.length === 0) {
+          navigation.navigate("Search", {
+            screen: "Listing",
+            params: { item: item },
+            initial: false
+          });
+        } else {
+          navigation.navigate("Search", {
+            screen: "SubCategories",
+            params: { item: item },
+            initial: false
+          });
+        }
       }}
     />
   );

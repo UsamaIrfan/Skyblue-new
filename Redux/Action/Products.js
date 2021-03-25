@@ -2,6 +2,8 @@ export const FETCH_CATEGORIES = "FETCH_CATEGORIES";
 export const FETCH_PRODUCT = "FETCH_PRODUCT";
 export const FETCH_SLIDER = "FETCH_SLIDER";
 export const RECENT_PRODUCTS = "RECENT_PRODUCTS";
+export const SET_PRODUCT_EMPTY = "SET_PRODUCT_EMPTY";
+export const ADD_PRODUCT = "ADD_PRODUCT";
 import axios from "axios";
 
 const Api = "http://skybluewholesale.com:80/";
@@ -13,7 +15,7 @@ export const fetchCategoriesFunc = () => {
     const id = getState().Auth.Login.customerId;
     await axios
       .post(
-        `http://skybluewholesale.com:80/api/CatalogApi/Categories?customerId=107001&pageIndex=0&pageSize=25`,
+        `http://skybluewholesale.com:80/api/CatalogApi/Categories?customerId=107001&pageIndex=0&pageSize=5`,
         postData,
         {
           headers: { "Content-Type": "application/json" },
@@ -26,19 +28,20 @@ export const fetchCategoriesFunc = () => {
         });
       })
       .catch((error) => {
+        console.log(error);
         throw new Error("Something Went Wrong While Getting Product Listing.");
       });
   };
 };
 
 // demo Login starts here
-// export const fetchProductFunc = (catId) => {
+// export const fetchProductFunc = (catId, pageIndex) => {
 //   return async (dispatch, getState) => {
 //     const id = getState().Auth.Login.customerId;
 //     console.log(id);
 
 //     const response = await fetch(
-//       `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}`,
+//       `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${0 + pageIndex}&pageSize=8`,
 //       {
 //         method: "POST",
 //       }
@@ -61,14 +64,19 @@ export const fetchCategoriesFunc = () => {
 //   };
 // };
 
-export const fetchProductFunc = (catId) => {
+export const fetchProductFunc = (catId, pageIndex) => {
   var postData = {};
 
   return async (dispatch, getState) => {
     const id = getState().Auth.Login.customerId;
+    console.log(
+      `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${
+        0 + pageIndex
+      }&pageSize=8`
+    );
     await axios
       .post(
-        `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}`,
+        `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${pageIndex}&pageSize=8`,
         postData,
         {
           headers: { "Content-Type": "application/json" },
@@ -87,6 +95,44 @@ export const fetchProductFunc = (catId) => {
   };
 };
 
+export const addProductFunc = (catId, pageIndex) => {
+  var postData = {};
+
+  return async (dispatch, getState) => {
+    const id = getState().Auth.Login.customerId;
+    const prevCats = getState().Product.catProduct
+    console.log(prevCats)
+    console.log(
+      `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=0&pageSize=8`
+    );
+    await axios
+      .post(
+        `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${pageIndex}&pageSize=8`,
+        postData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
+      .then((response) => {
+        // console.log("RESPONSE ========>", response);
+        dispatch({
+          type: FETCH_PRODUCT,
+          catProduct: response.data.obj,
+        });
+      })
+      .catch((error) => {
+        throw new Error("Something Went Wrong While Getting Product Listing.");
+      });
+  };
+};
+
+export const setProductEmpty = () => {
+  return (dispatch) => {
+    dispatch({
+      type: SET_PRODUCT_EMPTY,
+    });
+  };
+};
 
 // demo Login starts here
 // export const fetchSliderImages = () => {
@@ -114,18 +160,15 @@ export const fetchProductFunc = (catId) => {
 export const fetchSliderImages = () => {
   return async (dispatch, getState) => {
     await axios
-      .get(
-        `${Api}api/CatalogApi/GetSliderImages`,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      )
+      .get(`${Api}api/CatalogApi/GetSliderImages`, {
+        headers: { "Content-Type": "application/json" },
+      })
       .then((response) => {
         // console.log(response.data);
-    dispatch({
-      type: FETCH_SLIDER,
-      slider: response.data.obj,
-    });
+        dispatch({
+          type: FETCH_SLIDER,
+          slider: response.data.obj,
+        });
       })
       .catch((error) => {
         throw new Error(error);
@@ -165,22 +208,18 @@ export const fetchSliderImages = () => {
 
 export const getRecentProducts = () => {
   return async (dispatch, getState) => {
-    postData = {}
+    postData = {};
     const id = getState().Auth.Login.customerId;
     await axios
-      .post(
-        `${Api}api/CatalogApi/RecentProducts?customerId=${id}`,
-        postData,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      )
+      .post(`${Api}api/CatalogApi/RecentProducts?customerId=${id}`, postData, {
+        headers: { "Content-Type": "application/json" },
+      })
       .then((response) => {
         // console.log(response.data);
-    dispatch({
-      type: RECENT_PRODUCTS,
-      recentProducts: response.data.obj,
-    });
+        dispatch({
+          type: RECENT_PRODUCTS,
+          recentProducts: response.data.obj,
+        });
       })
       .catch((error) => {
         throw new Error("Something Went Wrong While Getting Recent Products.");

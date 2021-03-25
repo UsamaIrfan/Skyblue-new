@@ -18,7 +18,7 @@ import SuccessScreen from "../../COMPONENTS/UI/SuccessScreen";
 import * as cartAction from "../../Redux/Action/Cart";
 import { useDispatch, useSelector } from "react-redux";
 import { back } from "react-native/Libraries/Animated/src/Easing";
-import Loader from "../../COMPONENTS/Loader";
+import ProductSkull from "../../COMPONENTS/Skeletons/CheckSkull";
 // import EmptyScreen from "../../Components/UI/EmptyScreen";
 // import { isDate } from "moment";
 const ViewCart = (props) => {
@@ -178,14 +178,14 @@ const ViewCart = (props) => {
   }, []);
   if (isFetch === true) {
     return (
-      <Loader />
+      <ProductSkull />
     );
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, marginBottom: 60 }}>
       {isLoading === true ? (
-        <Loader />
+        <ProductSkull />
       ) : (
         <View style={{ flex: 1 }}>
           {cartProducts.Items?.length === 0 ? (

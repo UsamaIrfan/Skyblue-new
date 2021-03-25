@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity,AsyncStorage } from "react-native";
+import { View, Text, TouchableOpacity, AsyncStorage } from "react-native";
 import { colors } from "../../Constant";
 import Loader from "../../COMPONENTS/Loader";
 import ImageComp from "../../COMPONENTS/UI/Image";
 import * as authActions from "../../Redux/Action/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { NavigationContainer, useIsFocused } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  MaterialCommunityIcons,
+  Ionicons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 
 const template = [
   { id: 1, value: "Profile" },
@@ -43,15 +47,14 @@ const Account = ({ navigation }) => {
   };
 
   // User Profile
-  const ProfileInfo = useSelector(state=>state.Auth.Info)
-
+  const ProfileInfo = useSelector((state) => state.Auth.Info);
 
   // FETCH CATEGORIES
   useEffect(() => {
     fetchProfileInfo();
   }, [isFocused]);
   return (
-    <View style={{ flex: 1,   }}>
+    <View style={{ flex: 1 }}>
       <View
         style={{
           width: "100%",
@@ -62,8 +65,10 @@ const Account = ({ navigation }) => {
           paddingBottom: 15,
         }}
       >
-        <Text style={{ fontSize: 20, fontFamily: "Bold", color:'#fff' }}>
-        {ProfileInfo !== null ? `${ProfileInfo.FirstName} ${ProfileInfo.LastName}`  : ""}
+        <Text style={{ fontSize: 20, fontFamily: "Bold", color: "#fff" }}>
+          {ProfileInfo !== null
+            ? `${ProfileInfo.FirstName} ${ProfileInfo.LastName}`
+            : ""}
         </Text>
       </View>
       <View style={{ paddingTop: 10, flex: 1 }}>
@@ -89,11 +94,10 @@ const Account = ({ navigation }) => {
                 }}
               >
                 {item.value === "Profile" ? (
-                  <ImageComp
-                    Icon
-                    width={23}
-                    height={23}
-                    imageUri={require("../../assets/Icons/user.png")}
+                  <Ionicons
+                    name="person-outline"
+                    size={24}
+                    color={colors.Blue}
                   />
                 ) : null}
                 {item.value === "Orders" ? (
@@ -111,12 +115,7 @@ const Account = ({ navigation }) => {
                   />
                 ) : null}
                 {item.value === "Logout" ? (
-                  <ImageComp
-                    Icon
-                    width={23}
-                    height={23}
-                    imageUri={require("../../assets/Icons/logout.png")}
-                  />
+                  <MaterialIcons name="logout" size={24} color={colors.Blue} />
                 ) : null}
               </View>
 
@@ -153,12 +152,10 @@ const Account = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         ))}
-        <View
-          style={{ alignItems: "center", height: 50 }}
-        >
+        <View style={{ alignItems: "center", height: 50 }}>
           <TouchableOpacity
-              onPress={logoutHandler}
-              style={{
+            onPress={logoutHandler}
+            style={{
               width: "90%",
 
               flexDirection: "row",
@@ -172,12 +169,7 @@ const Account = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              <ImageComp
-                Icon
-                width={23}
-                height={23}
-                imageUri={require("../../assets/Icons/logout.png")}
-              />
+              <MaterialIcons name="logout" size={24} color={colors.Blue} />
             </View>
 
             <View

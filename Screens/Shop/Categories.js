@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, Dimensions, TouchableOpacity, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import { categories, products } from "../../DummyData/Categories";
 import ImageComp from "../../COMPONENTS/UI/Image";
 import { useSelector } from "react-redux";
@@ -20,19 +26,39 @@ const Categories = ({ navigation }) => {
       navigation.navigate("SubCategories", { id: item.Id });
     }
   };
-  const renderItem = ({ item }) => <List itemData={item} />;
-  
-  return (
-    <View style={{ flex: 1 }}>
-    <FlatList
-      data={categoriesFetch}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id}
-      horizontal={false}
-      numColumns={2}
+  const renderItem = ({ item }) => (
+    <List
+      itemData={item}
+      navigation={navigation}
+      onSelect={() => {
+        if (item.SubCategoryItems.length === 0) {
+          navigation.navigate("Search", {
+            screen: "Listing",
+            params: { item: item },
+            initial: false,
+          });
+        } else {
+          navigation.navigate("Search", {
+            screen: "SubCategories",
+            params: { item: item },
+            initial: false,
+          });
+        }
+      }}
     />
-  </View>
-    
+  );
+
+  return (
+    <View style={{ flex: 1, alignItems: "center" }}>
+      <FlatList
+        data={categoriesFetch}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        horizontal={false}
+        numColumns={2}
+      />
+    </View>
+
     // <ScrollView>
     //   <View>
     //     <View

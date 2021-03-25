@@ -61,7 +61,7 @@ const mainNavigator = () => {
   const tryLogin = async () => {
     const userStorage = await AsyncStorage.getItem("userData");
     setIsUser(userStorage);
-    console.log("Stored Data ===>",userStorage)
+    console.log("Stored Data ===>", userStorage);
 
     if (!userStorage) {
       setAppLoading(false);
@@ -126,6 +126,100 @@ const mainNavigator = () => {
   } else {
     // const count = useSelector((state) => state.Cart.cartCount);
     const Tab = createBottomTabNavigator();
+    const HomeNavigatorFunc = () => {
+      const count = useSelector((state) => state.Cart.cartCount);
+      return (
+        <HomeNavigator.Navigator
+        // initialRouteName="PriceOffer
+        >
+          <HomeNavigator.Screen
+            name="HomeMain"
+            component={Home}
+            options={({ navigation }) => ({
+              headerTitleAlign: "center",
+              headerTitleStyle: {
+                fontFamily: "Bold",
+                fontSize: 17,
+                letterSpacing: 1,
+              },
+              headerStyle: {
+                backgroundColor: colors.Blue,
+              },
+              headerLeft: () => (
+                <View style={{ paddingLeft: 10 }}>
+                  <Ionicons
+                    name="qr-code"
+                    size={24}
+                    color="#fff"
+                    onPress={() => navigation.navigate("BarCode")}
+                  />
+                </View>
+              ),
+              headerTintColor: "white",
+              headerTitle: () => (
+                <View style={{ flexDirection: "row" }}>
+                  <View
+                    style={{
+                      height: "70%",
+                      justifyContent: "flex-end",
+                    }}
+                  ></View>
+                  <ImageComp
+                    Icon
+                    width={120}
+                    height={30}
+                    imageUri={require("../assets/LogoWhite.png")}
+                  />
+                </View>
+              ),
+
+              headerRight: () => (
+                <View style={{ paddingRight: 15 }}>
+                  <Ionicons
+                    name="cart-outline"
+                    size={30}
+                    color="#fff"
+                    onPress={() => navigation.navigate("Bag")}
+                  />
+
+                  <View
+                    style={{
+                      width: 15,
+                      height: 15,
+                      borderRadius: 125,
+                      backgroundColor: "white",
+                      position: "absolute",
+                      right: 10,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text style={{ fontFamily: "Regular", fontSize: 10 }}>
+                      {count}
+                    </Text>
+                  </View>
+                </View>
+              ),
+            })}
+          />
+          <HomeNavigator.Screen
+            name="BarCode"
+            component={barCode}
+            options={{
+              headerTintColor: "white",
+              headerStyle: { backgroundColor: colors.Blue },
+              headerTitleAlign: "center",
+              headerTitleStyle: {
+                fontFamily: "Bold",
+                fontSize: 17,
+                letterSpacing: 1,
+              },
+              headerTitle: "SCAN BARCODE",
+            }}
+          />
+        </HomeNavigator.Navigator>
+      );
+    };
     return (
       <NavigationContainer>
         <Tab.Navigator

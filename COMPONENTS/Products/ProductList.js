@@ -28,10 +28,11 @@ const ProductListing = (props) => {
         backgroundColor: "#fff",
         width: width / 2.5,
         marginBottom: 20,
-        marginRight: props.Listing ? 0 : 20,
+        // marginRight: props.Listing ? 0 : 20,
         maxHeight: 300,
         minHeight: 280,
         borderRadius: 10,
+        marginHorizontal: 10,
       }}
     >
       <TouchableOpacity

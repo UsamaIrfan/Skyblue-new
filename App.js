@@ -11,7 +11,7 @@ import AppLoading from "expo-app-loading";
 
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import ReduxThunk from "redux-thunk";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 // Redux Imports End here
 
 // Reducers Import here

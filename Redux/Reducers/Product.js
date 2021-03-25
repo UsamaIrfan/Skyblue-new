@@ -10,6 +10,8 @@ import {
   FETCH_PRODUCT,
   FETCH_SLIDER,
   RECENT_PRODUCTS,
+  SET_PRODUCT_EMPTY,
+  ADD_PRODUCT
 } from "../Action/Products";
 
 const initialState = {
@@ -73,10 +75,24 @@ export default (state = initialState, action) => {
         Products: action.Products,
       };
     case FETCH_PRODUCT:
+      if (!state.catProducts) {
+        console.log("INITIAL Products")
+        return {
+          ...state,
+          catProducts: action.catProduct,
+        };
+      }
+      case ADD_PRODUCT:
+        return {
+          ...state,
+            catProducts: state.catProducts.concat(action.catProduct),
+          };
+      case SET_PRODUCT_EMPTY: 
       return {
-        ...state,
-        catProducts: action.catProduct,
+      ...state,
+        catProducts: [],
       };
+
     case FETCH_SLIDER:
       return {
         ...state,
