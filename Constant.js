@@ -1,4 +1,4 @@
-import { AntDesign, FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons, Feather } from '@expo/vector-icons'; 
+import {Entypo, AntDesign, FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons, Feather } from '@expo/vector-icons'; 
 
 export const colors = {
   Black: "#000000",
@@ -11,4 +11,4 @@ export const colors = {
   White: "#fff",
 };
 
-export { AntDesign, FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons, Feather }
+export {Entypo, AntDesign, FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons, Feather }

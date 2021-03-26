@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
+import {colors} from "../../Constant";
 
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
@@ -18,6 +19,7 @@ const List = (props) => {
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={props.onSelect}
+      style={{ alignItems: "center" , position: "relative", marginVertical: 10,}}
     >
       <View style={styles.container}>
         <View style={styles.MainConainer}>
@@ -27,14 +29,14 @@ const List = (props) => {
                 ? itemData.PictureUrl
                 : itemData.PictureModels.DefaultPictureModel.ImageUrl,
             }}
-            style={{ flex: 1 }}
+            style={{ flex: 1, opacity: 0.9 ,position: "absolute", top: 0, height: "100%", width: "100%"}}
             resizeMode="cover"
           />
           <View
-            style={{ paddingHorizontal: "5%", marginTop: "2%", flex: 0.25 }}
+            style={{ marginHorizontal: width * 0.02 ,marginTop: width * 0.02, flex: 0.25 }}
           >
             <Text
-              style={{ fontSize: 16, textAlign: "left", fontWeight: "bold" }}
+              style={{ fontSize: 14, fontFamily: "Regular", maxWidth: "80%", textAlign: "center", fontWeight: "bold" , paddingVertical: 3, paddingHorizontal: 4, borderRadius: 8, backgroundColor: colors.Blue, color: "#fff"}}
             >
               {itemData.Name}
             </Text>
@@ -55,17 +57,18 @@ const styles = StyleSheet.create({
   MainConainer: {
     height: height * 0.22,
     width: width * 0.45,
-    backgroundColor: "#fff",
-    margin: 5,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowOpacity: 0.58,
-    shadowRadius: 16.0,
-
-    elevation: 15,
+    marginHorizontal: 5,
+    // backgroundColor: "#fff",
+    // margin: 5,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.23,
+    // shadowRadius: 2.62,
+    
+    // elevation: 5,
     borderRadius: 8,
     overflow: "hidden",
   },

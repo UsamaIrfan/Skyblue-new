@@ -27,7 +27,8 @@ const { width, height } = Dimensions.get("window");
 
 const Home = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const loginDetails = useSelector((state) => state.Auth.Login);
+  const [Reloading, setReloading] = useState(false);
+  const [PageIndex, setPageIndex] = useState(1);
   // console.log(loginDetails);
 
   const isFocused = useIsFocused();
@@ -68,12 +69,6 @@ const Home = ({ navigation }) => {
     await dispatch(authActions.fetchCountry());
   };
 
-  // useEffect(() => {
-  //   fetchCountryHandler();
-  // }, []);
-
-  // FETCH CART COUNT
-
   const fetchCountHandler = async () => {
     await dispatch(cartActions.fetchCountCart());
   };
@@ -82,71 +77,94 @@ const Home = ({ navigation }) => {
     fetchCountHandler();
   }, [isFocused]);
 
-  const categoriesHandler = (item) => {
-    if (item.SubCategoryItems.length === 0) {
-      navigation.navigate("Shop", {
-        screen: "Listing",
-        params: { id: item.Id, name: item.Name },
-        initial: false,
-      });
-    } else {
-      navigation.navigate("Shop", {
-        screen: "SubCategories",
-        params: { id: item.Id },
-        initial: false,
-      });
+  const reload = async () => {
+    if (PageIndex < 8) {
+      setPageIndex(PageIndex + 1);
+      setReloading(true);
+      await dispatch(productAction.addCategoriesFunc(PageIndex));
+      setReloading(false);
     }
   };
 
-  if (!isLoading && Object.keys(categoriesFetch).length == null) {
-    console.log("working");
-  }
+  // FETCH CATEGORIES
 
-  const getData = () => {
-    console.log("getData");
-    alert("done");
-    // setIsLoading(true);
-    // //Service to get the data from the server to render
-    // fetch('https://aboutreact.herokuapp.com/getpost.php?offset=' + offset)
-    //   //Sending the currect offset with get request
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     //Successful response from the API Call
-    //     setOffset(offset + 1);
-    //     //After the response increasing the offset for the next API call.
-    //     setDataSource([...dataSource, ...responseJson.results]);
-    //     setIsLoading(false);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
-  };
+  const renderCats = ({ item }) => (
+    <React.Fragment>
+      <List
+        itemData={item}
+        navigation={navigation}
+        onSelect={() => {
+          if (!item.HasSub) {
+            navigation.navigate("Search", {
+              screen: "Listing",
+              params: { item: item },
+              initial: false,
+            });
+          } else {
+            navigation.navigate("Search", {
+              screen: "SubCategories",
+              params: { item: item },
+              initial: false,
+            });
+          }
+        }}
+      />
+    </React.Fragment>
+  );
 
-  const renderItem = ({ item }) => (
-    <List
-      itemData={item}
-      navigation={navigation}
-      onSelect={() => {
-        if (item.SubCategoryItems.length === 0) {
-          navigation.navigate("Search", {
-            screen: "Listing",
-            params: { item: item },
-            initial: false
-          });
-        } else {
-          navigation.navigate("Search", {
-            screen: "SubCategories",
-            params: { item: item },
-            initial: false
-          });
-        }
-      }}
-    />
+  const renderItem = ({ item, index }) => (
+    <React.Fragment>
+      {/* {console.log("RECENT =====>", item)} */}
+      <ProductListing
+        item={item}
+        Listing
+        onPress={() => navigation.navigate("Detailed", { item: item })}
+        key={index}
+        imageUri={{
+          uri: item?.PictureModels?.PictureModels[0].ImageUrl,
+        }}
+        title={item?.Name}
+        description={item?.ShortDescription}
+        price={`${item?.ProductPrice?.Price}`}
+        imageUriSec={require("../../assets/Icons/shopping-bag.png")}
+        widthSec={20}
+        heightSec={20}
+        // onPressSec={() => addToCardHandler(item)}
+      />
+    </React.Fragment>
   );
 
   const footer = () => {
     return (
       <View style={{ marginBottom: 60 }}>
+        {PageIndex < 8 && (
+          <View style={styles.footer}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={reload}
+              //On Click of button calling getData function to load more data
+              style={styles.loadMoreBtn}
+            >
+              <Text style={styles.btnText}>Load More</Text>
+              {Reloading ? (
+                <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
+              ) : null}
+            </TouchableOpacity>
+          </View>
+        )}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingVertical: 10,
+            width: width * 0.9,
+          }}
+        >
+          <Text style={{ fontFamily: "Regular" }}>Recent Products</Text>
+          <TouchableOpacity activeOpacity={0.5}>
+            <Text style={{ fontFamily: "Regular" }}>View All</Text>
+          </TouchableOpacity>
+        </View>
         <FlatList
           data={recentProducts}
           renderItem={renderItem}
@@ -203,35 +221,40 @@ const Home = ({ navigation }) => {
   const renderFooter = () => {
     return (
       //Footer View with Load More button
-      <View style={styles.footer}>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={getData}
-          //On Click of button calling getData function to load more data
-          style={styles.loadMoreBtn}
-        >
-          <Text style={styles.btnText}>Load More</Text>
-          {isLoading ? (
-            <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
-          ) : null}
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={getData}
+        //On Click of button calling getData function to load more data
+        style={styles.loadMoreBtn}
+      >
+        <Text style={styles.btnText}>Load More</Text>
+        {isLoading ? (
+          <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
+        ) : null}
+      </TouchableOpacity>
     );
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, alignItems: "center" }}>
       <FlatList
         data={categoriesFetch}
-        renderItem={renderItem}
+        renderItem={renderCats}
         keyExtractor={(item) => item.id}
         horizontal={false}
         numColumns={2}
         removeClippedSubviews={true}
         bounces={true}
         ListFooterComponent={footer}
+        ListFooterComponentStyle={{ paddingLeft: 20 }}
         ListHeaderComponent={Header}
-        refreshing={true}
+        refreshing={Reloading}
+        onRefresh={() => {
+          reload();
+        }}
+        // onEndReachedThreshold={1}
+        // onEndReached={reload}
+        // onEndReachedCalledDuringMomentum={true}
       />
     </View>
   );
@@ -282,7 +305,7 @@ const styles = StyleSheet.create({
   },
   loadMoreBtn: {
     padding: 10,
-    backgroundColor: "#800000",
+    backgroundColor: colors.Blue,
     borderRadius: 4,
     flexDirection: "row",
     justifyContent: "center",

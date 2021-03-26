@@ -4,18 +4,20 @@ export const FETCH_SLIDER = "FETCH_SLIDER";
 export const RECENT_PRODUCTS = "RECENT_PRODUCTS";
 export const SET_PRODUCT_EMPTY = "SET_PRODUCT_EMPTY";
 export const ADD_PRODUCT = "ADD_PRODUCT";
+export const ADD_SUB_CATS = "ADD_SUB_CATS";
+export const ADD_CATAGORIES = "ADD_CATAGORIES";
 import axios from "axios";
 
 const Api = "http://skybluewholesale.com:80/";
 
-export const fetchCategoriesFunc = () => {
+export const fetchCategoriesFunc = (pageSize = 6) => {
   var postData = {};
 
   return async (dispatch, getState) => {
     const id = getState().Auth.Login.customerId;
     await axios
       .post(
-        `http://skybluewholesale.com:80/api/CatalogApi/Categories?customerId=107001&pageIndex=0&pageSize=5`,
+        `http://skybluewholesale.com:80/api/CatalogApi/Categories?customerId=107001&pageIndex=0&pageSize=${pageSize}`,
         postData,
         {
           headers: { "Content-Type": "application/json" },
@@ -25,6 +27,59 @@ export const fetchCategoriesFunc = () => {
         dispatch({
           type: FETCH_CATEGORIES,
           Products: response.data.obj,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        throw new Error("Something Went Wrong While Getting Product Listing.");
+      });
+  };
+};
+
+export const addCategoriesFunc = (pageIndex) => {
+  var postData = {};
+
+  return async (dispatch, getState) => {
+    const id = getState().Auth.Login.customerId;
+    await axios
+      .post(
+        `http://skybluewholesale.com:80/api/CatalogApi/Categories?customerId=107001&pageIndex=${pageIndex}&pageSize=6`,
+        postData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
+      .then((response) => {
+        // console.log(response.data.obj);
+        dispatch({
+          type: ADD_CATAGORIES,
+          Products: response.data.obj,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        throw new Error("Something Went Wrong While Getting Product Listing.");
+      });
+  };
+};
+
+export const RecursiveParentChildCategories = (CatId) => {
+  var postData = {};
+
+  return async (dispatch, getState) => {
+    const id = getState().Auth.Login.customerId;
+    await axios
+      .post(
+        `http://skybluewholesale.com:80/api/CatalogApi/RecursiveParentChildCategories?parentCategoryId=${CatId}&customerId=107001`,
+        postData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
+      .then((response) => {
+        dispatch({
+          type: ADD_SUB_CATS,
+          subCats: response.data.obj,
         });
       })
       .catch((error) => {
@@ -69,14 +124,9 @@ export const fetchProductFunc = (catId, pageIndex) => {
 
   return async (dispatch, getState) => {
     const id = getState().Auth.Login.customerId;
-    console.log(
-      `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${
-        0 + pageIndex
-      }&pageSize=8`
-    );
     await axios
       .post(
-        `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${pageIndex}&pageSize=8`,
+        `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${pageIndex}&pageSize=6`,
         postData,
         {
           headers: { "Content-Type": "application/json" },
@@ -100,14 +150,10 @@ export const addProductFunc = (catId, pageIndex) => {
 
   return async (dispatch, getState) => {
     const id = getState().Auth.Login.customerId;
-    const prevCats = getState().Product.catProduct
-    console.log(prevCats)
-    console.log(
-      `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=0&pageSize=8`
-    );
+    const prevCats = getState().Product.catProduct;
     await axios
       .post(
-        `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${pageIndex}&pageSize=8`,
+        `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${pageIndex}&pageSize=6`,
         postData,
         {
           headers: { "Content-Type": "application/json" },

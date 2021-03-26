@@ -5,18 +5,22 @@
 //   LOGOUT,
 //   AUTHENTICATE,
 // } from "../../Redux/Actions/Auth";
+import { ActionSheetIOS } from "react-native";
 import {
   FETCH_CATEGORIES,
   FETCH_PRODUCT,
   FETCH_SLIDER,
   RECENT_PRODUCTS,
   SET_PRODUCT_EMPTY,
-  ADD_PRODUCT
+  ADD_PRODUCT,
+  ADD_SUB_CATS,
+  ADD_CATAGORIES,
 } from "../Action/Products";
 
 const initialState = {
   Products: [],
   catProducts: [],
+  subCats: [],
   sliderImages: [],
   recentProducts: [
     {
@@ -74,9 +78,19 @@ export default (state = initialState, action) => {
         ...state,
         Products: action.Products,
       };
-    case FETCH_PRODUCT:
-      if (!state.catProducts) {
-        console.log("INITIAL Products")
+      case ADD_SUB_CATS:
+        return {
+          ...state,
+          subCats: action.subCats,
+        }
+        case ADD_CATAGORIES: 
+        return {
+          ...state,
+          Products: state.Products.concat(action.Products)
+        }
+      case FETCH_PRODUCT:
+        if (!state.catProducts) {
+          console.log("INITIAL Products")
         return {
           ...state,
           catProducts: action.catProduct,
@@ -98,6 +112,7 @@ export default (state = initialState, action) => {
         ...state,
         sliderImages: action.slider,
       };
+        
 
     case RECENT_PRODUCTS:
       return {

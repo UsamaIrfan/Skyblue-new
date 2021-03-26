@@ -20,38 +20,80 @@ import { colors, Ionicons, FontAwesome } from "../../Constant";
 import * as cartActions from "../../Redux/Action/Cart";
 import Loader from "../../COMPONENTS/Loader";
 import ProductSkull from "../../COMPONENTS/Skeletons/ProductSkull";
+import axios from "axios";
+
 const { width, height } = Dimensions.get("window");
 const Listing = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [Reloading, setReloading] = useState(false);
   const [PageIndex, setPageIndex] = useState(1);
+  const [Search, setSearch] = useState(null);
 
   const userId = useSelector((state) => state.Auth.Login.customerId);
   const isFocused = useIsFocused();
 
-  const productsAvailable = useSelector((state) => state.Product.catProducts);
+  const [ProductsAvailable, setProductsAvailable] = useState();
 
   const dispatch = useDispatch();
 
+  const id = useSelector((state) => state.Auth.Login.customerId);
+
   const fetchProducts = async () => {
+    // await setTimeout(async () => {
+    // }, 250);
     setIsLoading(true);
-    await dispatch(productAction.setProductEmpty());
-    await setTimeout(async () => {
-      await dispatch(productAction.fetchProductFunc(route.params?.item.Id));
-    }, 500);
+    setProductsAvailable([]);
+    await fetchProductFunc(route.params?.item.Id, 0);
     navigation.setOptions({
-      headerTitle: route.params?.item.Name + ` - (${productsAvailable.length})`,
+      headerTitle:
+        route.params?.item.Name + ` - (${ProductsAvailable?.length})`,
     });
     setIsLoading(false);
   };
 
   const reload = async () => {
     setPageIndex(PageIndex + 1);
+    // console.log("FIREDDDDDD");
+    await addfetchProductFunc(route.params?.item.Id, PageIndex);
+  };
+
+  const fetchProductFunc = async (catId, pageIndex) => {
+    setIsLoading(true);
+    await axios
+      .post(
+        `http://skybluewholesale.com:80/api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${pageIndex}&pageSize=6`,
+        postData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
+      .then((response) => {
+        setProductsAvailable(response.data.obj);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        throw new Error("Something Went Wrong While Getting Product Listing.");
+      });
+  };
+
+  const addfetchProductFunc = async (catId, pageIndex) => {
     setReloading(true);
-    await dispatch(
-      productAction.addProductFunc(route.params?.item.Id, PageIndex)
-    );
-    setReloading(false);
+    await axios
+      .post(
+        `http://skybluewholesale.com:80/api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${pageIndex}&pageSize=6`,
+        postData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
+      .then((response) => {
+        setProductsAvailable(ProductsAvailable.concat(response.data.obj));
+        setReloading(false);
+      })
+      .catch((error) => {
+        setReloading(false);
+        throw new Error("Something Went Wrong While Getting Product Listing.");
+      });
   };
 
   // FETCH CATEGORIES
@@ -79,7 +121,6 @@ const Listing = ({ route, navigation }) => {
       }
 
       const resData = await response.json();
-      console.log(resData);
       Alert.alert("Successfully Add", "Product successfully add to cart");
       await dispatch(cartActions.fetchCountCart());
     } catch (err) {
@@ -89,35 +130,25 @@ const Listing = ({ route, navigation }) => {
   };
 
   const renderList = ({ item, index }) => (
-    <ProductListing
-      Listing
-      onPress={() => navigation.navigate("Detailed", { item: item })}
-      key={index}
-      imageUri={{
-        uri: item.PictureModels.PictureModels[0]?.ImageUrl,
-      }}
-      title={item.Name}
-      description={item.ShortDescription}
-      price={`${item.ProductPrice.Price}`}
-      imageUriSec={require("../../assets/Icons/shopping-bag.png")}
-      widthSec={20}
-      heightSec={20}
-      onPressSec={() => addToCardHandler(item)}
-    />
+    <React.Fragment>
+      <ProductListing
+        item={item}
+        Listing
+        onPress={() => navigation.navigate("Detailed", { item: item })}
+        key={index}
+        imageUri={{
+          uri: item?.PictureModels?.PictureModels[0]?.ImageUrl,
+        }}
+        title={item.Name}
+        description={item?.ShortDescription}
+        price={`${item?.ProductPrice?.Price}`}
+        imageUriSec={require("../../assets/Icons/shopping-bag.png")}
+        widthSec={20}
+        heightSec={20}
+        onPressSec={() => addToCardHandler(item)}
+      />
+    </React.Fragment>
   );
-
-  // const listLoader = () => {
-  //   if (Reloading) {
-  //     return (
-  //       <View style={styles.reloadContainer}>
-  //         <ActivityIndicator color={colors.Blue} size="small" />
-  //       </View>
-  //     );
-  //   }
-  //   return (
-  //     <View></View>
-  //   );
-  // };
 
   const renderHeader = () => (
     <View
@@ -135,7 +166,12 @@ const Listing = ({ route, navigation }) => {
           color={colors.Blue}
           style={styles.icon}
         />
-        <TextInput style={{ flex: 1 }} placeholder="Search" />
+        <TextInput
+          value={Search}
+          onChangeText={setSearch}
+          style={{ flex: 1 }}
+          placeholder="Search"
+        />
         <FontAwesome
           name="filter"
           size={24}
@@ -147,92 +183,49 @@ const Listing = ({ route, navigation }) => {
   );
 
   const renderEmpty = () => (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", width: width * 0.9 }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        width: width,
+      }}
+    >
       <Text>No Products Found</Text>
     </View>
   );
 
+  if (isLoading)
+    <View>
+      <ProductSkull />
+    </View>;
+
   return (
     <View style={{ flex: 1 }}>
-      {isLoading ? (
-        <ProductSkull />
-      ) : (
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            padding: 20,
-            paddingTop: 10,
-            marginBottom: 20,
-          }}
-        >
-          {/* {productsAvailable.length === 0 ? (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <SuccessScreen
-                  widthNeed
-                  width={200}
-                  height={200}
-                  //   onPress={() => props.navigation.navigate("Home")}
-                  imageUrl={require("../../assets/Icons/confirm.png")}
-                  title="NO PRODUCT FOUND"
-                  description="Sorry we are unable to find any product."
-                />
-              </View>
-            ) : (
-              <View
-                style={{
-                  width: "100%",
-                  flexDirection: "row",
-                  paddingHorizontal: 25,
-                  justifyContent: "space-between",
-                  paddingTop: 20,
-                  flexWrap: "wrap",
-                }}
-              >
-                {productsAvailable.map((item, index) => (
-                  <ProductListing
-                    Listing
-                    onPress={() =>
-                      navigation.navigate("Detailed", { item: item })
-                    }
-                    key={index}
-                    imageUri={{
-                      uri: item.PictureModels.PictureModels[0]?.ImageUrl,
-                    }}
-                    title={item.Name}
-                    description={item.ShortDescription}
-                    price={`${item.ProductPrice.Price}`}
-                    imageUriSec={require("../../assets/Icons/shopping-bag.png")}
-                    widthSec={20}
-                    heightSec={20}
-                    onPressSec={() => addToCardHandler(item)}
-                  />
-                ))}
-              </View>
-            )} */}
-          <FlatList
-            data={productsAvailable}
-            renderItem={renderList}
-            keyExtractor={(item, index) => index.toString()}
-            numColumns={2}
-            refreshing={Reloading}
-            bounces={true}
-            ListHeaderComponentStyle={{ paddingBottom: 10 }}
-            // onEndReached={reload}
-            ListHeaderComponent={renderHeader}
-            onRefresh={() => reload()}
-            onEndReachedThreshold={1}
-            ListEmptyComponent={renderEmpty}
-            onEndReached={reload}
-          />
-        </View>
-      )}
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          paddingTop: 10,
+          marginBottom: 20,
+        }}
+      >
+        <FlatList
+          data={ProductsAvailable}
+          renderItem={renderList}
+          keyExtractor={(item, index) => index.toString()}
+          numColumns={2}
+          refreshing={Reloading}
+          ListHeaderComponentStyle={{ paddingBottom: 10 }}
+          // onEndReached={reload}
+          ListHeaderComponent={renderHeader}
+          ListEmptyComponent={renderEmpty}
+          onRefresh={() => reload()}
+          onEndReachedThreshold={1}
+          onEndReached={reload}
+          onEndReachedCalledDuringMomentum={true}
+        />
+      </View>
     </View>
   );
 };

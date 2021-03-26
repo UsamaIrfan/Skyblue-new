@@ -131,6 +131,7 @@ const mainNavigator = () => {
       return (
         <HomeNavigator.Navigator
         // initialRouteName="PriceOffer
+
         >
           <HomeNavigator.Screen
             name="HomeMain"
@@ -179,7 +180,7 @@ const mainNavigator = () => {
                     name="cart-outline"
                     size={30}
                     color="#fff"
-                    onPress={() => navigation.navigate("Bag")}
+                    onPress={() => navigation.navigate("Cart")}
                   />
 
                   <View
@@ -201,6 +202,21 @@ const mainNavigator = () => {
                 </View>
               ),
             })}
+          />
+          <HomeNavigator.Screen
+            name="Cart"
+            component={CheckoutNavigatorFunc}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
+                <Feather
+                  name="shopping-bag"
+                  size={25}
+                  color={focused ? colors.Blue : "#000"}
+                />
+              ),
+              tabBarButton: (props) => <TabBarCustomButton {...props} />,
+            }}
           />
           <HomeNavigator.Screen
             name="BarCode"
@@ -357,7 +373,7 @@ export const HomeNavigatorFunc = () => {
                 name="cart-outline"
                 size={30}
                 color="#fff"
-                onPress={() => navigation.navigate("Bag")}
+                onPress={() => navigation.navigate("Cart")}
               />
 
               <View
@@ -379,6 +395,20 @@ export const HomeNavigatorFunc = () => {
             </View>
           ),
         })}
+      />
+      <HomeNavigator.Screen
+        name="Cart"
+        component={CheckoutNavigatorFunc}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Feather
+              name="shopping-bag"
+              size={25}
+              color={focused ? colors.Blue : "#000"}
+            />
+          ),
+          tabBarButton: (props) => <TabBarCustomButton {...props} />,
+        }}
       />
       <HomeNavigator.Screen
         name="BarCode"
