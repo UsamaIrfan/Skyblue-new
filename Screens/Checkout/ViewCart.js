@@ -7,19 +7,25 @@ import {
   TouchableOpacity,
   Modal,
   Alert,
+  Dimensions,
+  TextInput,
 } from "react-native";
 
 import ImageComp from "../../COMPONENTS/UI/Image";
 import CartProductRow from "../../COMPONENTS/Checkout/CartProductRow";
-import { colors as Color, colors } from "../../Constant";
-import { NavigationContainer, useIsFocused } from "@react-navigation/native";
+import { colors as Color, colors, MaterialIcons } from "../../Constant";
+import { useIsFocused } from "@react-navigation/native";
 import SuccessScreen from "../../COMPONENTS/UI/SuccessScreen";
 import * as cartAction from "../../Redux/Action/Cart";
 import { useDispatch, useSelector } from "react-redux";
-import { back } from "react-native/Libraries/Animated/src/Easing";
 import ProductSkull from "../../COMPONENTS/Skeletons/CheckSkull";
+import { showSimpleMessage } from "../../Redux/Action/General";
+import HideWithKeyboard from "react-native-hide-with-keyboard";
 // import EmptyScreen from "../../Components/UI/EmptyScreen";
 // import { isDate } from "moment";
+
+const { width, height } = Dimensions.get("window");
+
 const ViewCart = (props) => {
   const [subTotalPrice, setSubtotalPrice] = useState(0);
 
@@ -27,9 +33,14 @@ const ViewCart = (props) => {
   const [isFetch, setIsFetch] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModal, setIsModal] = useState(false);
+  const [itemQuantities, setItemQuantities] = useState([]);
+  const [updateAmount, setupdateAmount] = useState(null);
+  const [selectedProduct, setselectedProduct] = useState(null);
+  const [IsAmountUpdated, setIsAmountUpdated] = useState(false);
 
   const cartProducts = useSelector((state) => state.Cart.cart);
-  // console.log(cartProducts);
+  console.log(cartProducts.Items);
   const userId = useSelector((state) => state.Auth.Login.customerId);
   const isFocused = useIsFocused();
 
@@ -63,7 +74,7 @@ const ViewCart = (props) => {
     fetchViewCartData().then(() => {
       setIsLoading(false);
     });
-  }, [isDelete, isQuantityAdd, isFocused]);
+  }, [isDelete, isQuantityAdd, isFocused, IsAmountUpdated]);
 
   // ADD TO CART HANDLER
   const cartAllItemsHandler = async () => {
@@ -98,6 +109,69 @@ const ViewCart = (props) => {
     setIsLoading(false);
   };
 
+  // UPDATE TO CART HANDLER
+  const updateAmountHandler = async (updateAmount) => {
+    setIsModal(false);
+    setIsLoading(true);
+
+    console.log(
+      "USER: ",
+      userId,
+      "ITEM: ",
+      selectedProduct,
+      "AMOUNT: ",
+      updateAmount
+    );
+
+    try {
+      const response = await fetch(
+        `http://skybluewholesale.com:80/api/CatalogApi/AddProductToCart?customerId=${userId}&productId=${selectedProduct}&quantity=${updateAmount}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Something Went Wrong");
+      }
+
+      const resData = await response.json();
+      console.log(resData);
+      showSimpleMessage("success", {
+        message: "Success.",
+        description: "Product Added to Your Cart.",
+      });
+      // await dispatch(cartActions.fetchCountCart());
+    } catch (err) {
+      showSimpleMessage("warning", {
+        message: "Unable To add Product to Cart.",
+        description: `${err.message}`,
+      });
+    }
+    setIsLoading(false);
+
+    setIsLoading(true);
+    fetchViewCartData()
+      .then(() => {
+        showSimpleMessage("success", {
+          message: "Cart Updated",
+          description: "Cart Updated Successfully.",
+        });
+
+        setIsLoading(false);
+      })
+      .catch(() => {
+        showSimpleMessage("warning", {
+          message: "Failed To Update Cart",
+          description: "Failed.",
+        });
+        setIsLoading(false);
+      });
+  };
+
   useEffect(() => {
     props.navigation.setOptions({
       headerRight: () => (
@@ -124,17 +198,6 @@ const ViewCart = (props) => {
       ),
     });
   }, []);
-
-  // useEffect(() => {
-  //   const willFocusSub = props.navigation.addListener(
-  //     "willFocus",
-  //     fetchViewCartData
-  //   );
-
-  //   return () => {
-  //     willFocusSub.remove();
-  //   };
-  // }, [fetchViewCartData]);
 
   const quantityAmountHandler = useCallback(
     async (quan, pId) => {
@@ -170,7 +233,6 @@ const ViewCart = (props) => {
   );
 
   const deleteHandler = useCallback(async (cId) => {
-    console.log(cId);
     setIsDelete(true);
     await dispatch(cartAction.deleteCart(cId));
     setIsDelete(false);
@@ -179,107 +241,165 @@ const ViewCart = (props) => {
     return <ProductSkull />;
   }
 
+  const ModalDataHandler = (quantity, itemID) => {
+    setselectedProduct(itemID);
+    setItemQuantities(quantity);
+    setIsModal(true);
+  };
+
   return (
     <View style={{ flex: 1, marginBottom: 60 }}>
       {isLoading === true ? (
         <ProductSkull />
       ) : (
         <View style={{ flex: 1 }}>
-          <Modal
-            style={{ margin: 0, marginBottom: 0 }}
-            isVisible={isQuantity}
-            deviceWidth={width}
-            deviceHeight={height}
-            // onBackdropPress={() => setIsVisible(false)}
-            swipeDirection="down"
-            // onSwipeComplete={() => setIsVisible(false)}
-            // useNativeDriver={true}
-            // hideModalContentWhileAnimating={true}
-          >
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+          <View style={{}}>
+            <Modal
+              // isVisible={isModal}
+              visible={isModal}
+              // deviceWidth={width}
+              // deviceHeight={height}
+              transparent={true}
+              onBackdropPress={() => setIsModal(false)}
+              swipeDirection="down"
+              onSwipeComplete={() => setIsModal(false)}
+              useNativeDriver={true}
+              hideModalContentWhileAnimating={true}
             >
               <View
                 style={{
-                  width: "75%",
-
-                  backgroundColor: "white",
-                  borderRadius: 10,
-                  paddingHorizontal: 15,
-                  paddingTop: 10,
-                  paddingBottom: 20,
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
                 <View
                   style={{
-                    width: "100%",
-                    paddingHorizontal: 10,
-                    alignItems: "flex-end",
-                    marginTop: 10,
+                    width: "75%",
+
+                    backgroundColor: "white",
+                    borderRadius: 10,
+                    paddingHorizontal: 15,
+                    paddingTop: 10,
+                    paddingBottom: 20,
                   }}
                 >
-                  <ImageComp
-                    onPress={() => setIsQuantity(false)}
-                    width={22}
-                    height={22}
-                    imageUri={require("../../assets/Icons/cancel.png")}
-                  ></ImageComp>
-                </View>
-                <View style={{ width: "100%", alignItems: "center" }}>
-                  <Text style={{ fontFamily: "Bold", fontSize: 18 }}>
-                    Select Quantity
-                  </Text>
                   <View
                     style={{
                       width: "100%",
-                      marginTop: 35,
-                      alignItems: "center",
+                      paddingHorizontal: 10,
+                      alignItems: "flex-end",
+                      marginTop: 10,
                     }}
                   >
+                    <MaterialIcons
+                      onPress={() => setIsModal(false)}
+                      name="cancel"
+                      size={24}
+                      color={Color.Blue}
+                    />
+                  </View>
+                  <View style={{ width: "100%", alignItems: "center" }}>
+                    <Text style={{ fontFamily: "Bold", fontSize: 18 }}>
+                      Enter Quantity
+                    </Text>
                     <View
                       style={{
                         width: "100%",
-                        marginBottom: 20,
-                        maxHeight: 350,
+                        marginTop: 35,
+                        alignItems: "center",
                       }}
                     >
-                      <ScrollView>
-                        {productSelect.AllowedQuantities.map((item) => (
-                          <TouchableOpacity
-                            onPress={() => setQuantityHandler(item.Value)}
-                            key={item.Id}
-                            style={{
-                              width: "100%",
-                              backgroundColor:
-                                item.Value === quantity ? "#e5e5e5" : null,
+                      <View
+                        style={{
+                          width: "100%",
+                          marginBottom: 20,
+                          maxHeight: 350,
+                        }}
+                      >
+                        <ScrollView>
+                          {itemQuantities.length === 0 ? (
+                            <View>
+                              <TextInput
+                                placeholder="Add to your existing quantity"
+                                keyboardType="number-pad"
+                                returnKeyType="done"
+                                autoFocus
+                                value={updateAmount}
+                                style={{
+                                  width: "100%",
+                                  fontFamily: "Regular",
+                                  borderRadius: 8,
+                                  borderColor: Color.Blue,
+                                  borderWidth: 2,
+                                  paddingVertical: 3,
+                                  paddingHorizontal: 5,
+                                }}
+                                onChangeText={setupdateAmount}
+                                onSubmitEditing={() => {
+                                  updateAmountHandler(updateAmount);
+                                }}
+                              />
+                              <TouchableOpacity
+                                activeOpacity={0.5}
+                                onPress={() => {
+                                  updateAmountHandler(updateAmount);
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    textAlign: "center",
+                                    marginTop: 10,
+                                    marginHorizontal: "30%",
+                                    borderRadius: 8,
+                                    paddingVertical: 5,
+                                    paddingHorizontal: 8,
+                                    fontSize: 17,
+                                    backgroundColor: Color.Blue,
+                                    color: "#fff",
+                                  }}
+                                >
+                                  Update
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          ) : (
+                            itemQuantities.map((item, indx) => (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  updateAmountHandler(item.Value);
+                                }}
+                                key={indx}
+                                style={{
+                                  width: "100%",
+                                  // backgroundColor:
+                                  //   item.Value === quantity ? "#e5e5e5" : null,
 
-                              alignItems: "center",
-                              justifyContent: "center",
-                              height: 50,
-                            }}
-                          >
-                            <Text
-                              style={{
-                                fontSize: 16,
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  height: 50,
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 16,
 
-                                color: "#747474",
-                              }}
-                            >
-                              {item.Value}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </ScrollView>
+                                    color: "#747474",
+                                  }}
+                                >
+                                  {item.Value}
+                                </Text>
+                              </TouchableOpacity>
+                            ))
+                          )}
+                        </ScrollView>
+                      </View>
                     </View>
                   </View>
                 </View>
               </View>
-            </View>
-          </Modal>
+            </Modal>
+          </View>
           {cartProducts.Items?.length === 0 ? (
             <View
               style={{
@@ -320,8 +440,12 @@ const ViewCart = (props) => {
                       price={itemData.item.SubTotal}
                       quantity={itemData.item.Quantity}
                       onPressCancel={() => deleteHandler(itemData.item.Id)}
-                      id={itemData.item.id}
+                      onPressModal={() => setIsModal(true)}
+                      id={itemData.item.ProductId}
                       quantityReturnBack={quantityAmountHandler}
+                      allowedQuantities={itemData.item.AllowedQuantities}
+                      setItemQuantities={setItemQuantities}
+                      ModalDataHandler={ModalDataHandler}
                     />
                   )}
                 />
@@ -369,30 +493,32 @@ const ViewCart = (props) => {
                     </Text>
                   </View>
                 </View>
-                <View
-                  style={{
-                    width: "100%",
-                    paddingVertical: 15,
-                    alignItems: "center",
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() => props.navigation.navigate("Checkout")}
+                <HideWithKeyboard>
+                  <View
                     style={{
-                      width: "80%",
-                      height: 50,
-                      backgroundColor: Color.primary,
-                      justifyContent: "center",
+                      width: "100%",
+                      paddingVertical: 15,
                       alignItems: "center",
-                      borderRadius: 125,
-                      backgroundColor: colors.Blue,
                     }}
                   >
-                    <Text style={{ fontSize: 16, color: "white" }}>
-                      {cartProducts.OrderTotals.OrderTotal} - CHECKOUT
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                    <TouchableOpacity
+                      onPress={() => props.navigation.navigate("Checkout")}
+                      style={{
+                        width: "80%",
+                        height: 50,
+                        backgroundColor: Color.primary,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 125,
+                        backgroundColor: colors.Blue,
+                      }}
+                    >
+                      <Text style={{ fontSize: 16, color: "white" }}>
+                        {cartProducts.OrderTotals.OrderTotal} - CHECKOUT
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </HideWithKeyboard>
               </View>
             </View>
           )}

@@ -29,6 +29,7 @@ import { useIsFocused } from "@react-navigation/native";
 import * as authActions from "../Redux/Action/Auth";
 
 import Constants from "expo-constants";
+import { showSimpleMessage } from "../Redux/Action/General";
 
 // BELOW ARE COUNTRIES
 const Countries = [
@@ -82,7 +83,6 @@ const formReducer = (state, action) => {
 };
 
 const { width, height } = Dimensions.get("window");
-console.log(height);
 
 const Login = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -180,14 +180,6 @@ const Login = ({ navigation, route }) => {
   const dispatcher = useDispatch();
   const authenticateHandler = async () => {
     setCount(count + 1);
-    //         let EmailOrMobile;
-    //         if(loginSelection === 'Mobile') {
-    // EmailOrMobile = MobileNumber
-    //         }else{
-    //           EmailOrMobile = inputState.InputValues.Email
-    //         }
-    //         console.log(EmailOrMobile)
-    console.log("Me Called");
 
     try {
       setIsLoading(true);
@@ -198,6 +190,7 @@ const Login = ({ navigation, route }) => {
             : inputState.InputValues.Email,
           inputState.InputValues.Password,
           navigation,
+          showSimpleMessage
         )
       );
 
@@ -210,9 +203,6 @@ const Login = ({ navigation, route }) => {
 
       Alert.alert("Cant Login", err.message);
     }
-    // navigation.navigate("AgentDrawer", {
-    //   name: "CustomerListStack",
-    // });
   };
 
   //   //   Select COuntry handler
@@ -222,128 +212,12 @@ const Login = ({ navigation, route }) => {
     setCountrySelect(false);
   };
 
-  // Auth Code Ends here
-
-  // // AUTH MOBILE HANDLER
-
-  // const authenticationMobileHandler = async () => {
-
-  //   console.log("i just click");
-  //   console.log(selectedCountryCode+MobileNumber)
-
-  //   try {
-  //     setIsLoading(true)
-
-  //     const response = await fetch(
-  //       `${Api}api/agent/get-customer-by-phone`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           phone: selectedCountryCode + MobileNumber
-  //         }),
-  //       }
-  //     );
-  //     setIsLoading(false)
-
-  //     if (!response.ok) {
-  //       throw new Error("Something Went Wrong");
-  //     }
-
-  //     const resData = await response.json();
-  //  if(resData.success === true) {
-  //    setUserData(resData)
-  //    setIsVisible(true)
-  //    console.log('Succes')
-  //  }else{
-  //   Alert.alert('Invalid Phone Number', "Mobile number you entered is not registered" , [{text:'OK'}])
-  //  }
-
-  //   } catch (err) {
-  //     Alert.alert('Invalid Phone Number')
-  //   }
-  // };
-
-  // // Forgot Password code starts here
-
-  // const forgotHandler = () => {
-  //   try {
-  //     dispatcher(productActions.ForgotPassword(inputState.InputValues.Email));
-  //   } catch (err) {
-  //     Alert.alert("Forgot Password", err.message);
-  //   }
-  // };
-
-  // temp
-
-  // // create our ref
-  // const myInput1 = useRef();
-  // const myInput2 = useRef();
-  // const myInput = useRef();
   const secondRef = createRef(null);
   const thirdRef = useRef(null);
 
   const input1 = useRef();
   const input2 = useRef();
-
-  //  // check Validation Code
-  //  const checkCodeHandler = async() =>{
-  //   let isValidCode
-  //   console.log(userCode)
-  //   console.log(userData)
-  //   setIsVisible(false)
-
-  //   // setIsVisible(true)
-
-  //   try {
-  //     // cons
-  //     console.log('m running')
-
-  //     const response = await fetch(
-  //       `${Api}api/agent/validate-twilio-code/${userData.userId}`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           phone: selectedCountryCode + MobileNumber,
-  //           customerId: userData.userId,
-  //           twilioCode: userCode,
-  //           type: 1
-  //         }),
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error("Something Went Wrong");
-  //     }
-
-  //     const resData = await response.json();
-  //     console.log(resData)
-
-  //  if(resData.success === true) {
-
-  //    console.log('Succes')
-
-  //    await dispatcher(
-  //     productActions.LoginUserWithMobile(
-  //       userData,
-  //       pushToken
-  //     )
-  //   );
-  //  }else{
-  //   Alert.alert('Invalid Code', "Code you entered is not InValid!" , [{text:'TRY AGAIN', onPress: ()=> setIsVisible(true)}])
-  //  }
-
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-
-  // }
-
+  
   return (
     <KeyboardAvoidingView
       style={{

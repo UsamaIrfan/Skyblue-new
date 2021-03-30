@@ -7,7 +7,6 @@ const LOST_FOCUS = "LOST_FOCUS";
 const filedReducer = (state, action) => {
   switch (action.type) {
     case FIELD_CHANGE_HANDLER:
-      //  console.log(action.value);
       return {
         ...state,
         value: action.value,
@@ -67,7 +66,6 @@ const InputDesp = (props) => {
 
   const onLostFocus = () => {
     setIsFieldFocused(false);
-    // console.log("i called");
     fieldDispatch({ type: LOST_FOCUS });
   };
 

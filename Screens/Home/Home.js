@@ -32,7 +32,7 @@ const Home = ({ navigation }) => {
   const isFocused = useIsFocused();
 
   const categoriesFetch = useSelector((state) => state.Product.Products);
-  console.log(categoriesFetch);
+  // console.log(categoriesFetch);
 
   const sliderImages = useSelector((state) => state.Product.sliderImages);
   // console.log(sliderImages);
@@ -188,12 +188,10 @@ const Home = ({ navigation }) => {
             justifyContent: "space-between",
             paddingVertical: 10,
             width: width * 0.9,
+            paddingLeft: 15,
           }}
         >
           <Text style={{ fontFamily: "Regular" }}>Recent Products</Text>
-          <TouchableOpacity activeOpacity={0.5}>
-            <Text style={{ fontFamily: "Regular" }}>View All</Text>
-          </TouchableOpacity>
         </View>
         <FlatList
           data={recentProducts}
@@ -252,7 +250,7 @@ const Home = ({ navigation }) => {
         removeClippedSubviews={true}
         bounces={true}
         ListFooterComponent={footer}
-        ListFooterComponentStyle={{ paddingLeft: 20 }}
+        ListFooterComponentStyle={{ paddingLeft: 5 }}
         ListHeaderComponent={Header}
         refreshing={Reloading}
         onRefresh={() => {

@@ -29,6 +29,7 @@
     "react-native-del": "^0.0.2",
     "react-native-flash-message": "^0.1.23",
     "react-native-gesture-handler": "~1.8.0",
+    "react-native-hide-with-keyboard": "^1.2.1",
     "react-native-modal": "^11.5.6",
     "react-native-modal-dropdown": "https://github.com/siemiatj/react-native-modal-dropdown",
     "react-native-reanimated": "~1.13.0",

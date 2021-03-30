@@ -58,7 +58,6 @@ const formReducer = (state, action) => {
         ...state.InputValues,
         [action.inputId]: action.value,
       };
-      // console.log(updateValues);
 
       const updateValidities = {
         ...state.InputValidates,

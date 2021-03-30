@@ -7,10 +7,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   Dimensions,
-  Platform,
   Share,
-  Alert,
-  TextInput,
   KeyboardAvoidingView,
 } from "react-native";
 // import Header from "../Components/Header";
@@ -20,12 +17,10 @@ import { useDispatch, useSelector } from "react-redux";
 // import * as cartAction from "../Redux/Action/cart";
 // import Color from "../constant/color";
 import { colors as Color, colors } from "../../Constant";
-import { categories, products } from "../../DummyData/Categories";
 import Swiper from "react-native-swiper";
 import Modal from "react-native-modal";
 import * as cartActions from "../../Redux/Action/Cart";
 import Loader from "../../COMPONENTS/Loader";
-import ModalDropdown from "react-native-modal-dropdown";
 import {showSimpleMessage} from "../../Redux/Action/General"
 
 const { width, height } = Dimensions.get("window");
@@ -58,6 +53,8 @@ const Detailed = (props) => {
   // ADD TO CART HANDLER
   const addToCardHandler = async () => {
     setIsLoading(true);
+
+    console.log("USER: ", userId, "PRODUCT: ", productSelect.ProductPrice.ProductId, "QUANTITY: ", quantity)
 
     try {
       const response = await fetch(
@@ -369,7 +366,8 @@ const Detailed = (props) => {
                     color: "#fff",
                     flex: 1,
                     height: "100%",
-                    fontSize: 16,
+                    fontSize: width * 0.03,
+                    fontFamily: "Regular"
                   }}
                   keyboardType="number-pad"
                   placeholderTextColor="#fff"

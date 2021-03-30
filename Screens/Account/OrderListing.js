@@ -5,13 +5,12 @@ import Loader from "../../COMPONENTS/Loader";
 import { useSelector, useDispatch } from "react-redux";
 import * as cartAction from "../../Redux/Action/Cart";
 import ImageComp from "../../COMPONENTS/UI/Image";
-import { colors as Color } from "../../Constant";
+import { colors as Color, MaterialIcons } from "../../Constant";
 
 const OrderListing = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [fetch, setFetch] = useState(false);
   const Orders = useSelector((state) => state.Cart.order);
-  // console.log(Orders);
   const dispatch = useDispatch();
 
   const fetchingOrder = useCallback(async () => {
@@ -27,7 +26,7 @@ const OrderListing = (props) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, marginBottom: 60 }}>
         {fetch === true && (
           <FlatList
             data={Orders}
@@ -53,16 +52,15 @@ const OrderListing = (props) => {
                   <Text style={{ fontSize: 19, color: "#484848" }}>
                     ORDER NUMBER #{item.CustomOrderNumber}
                   </Text>
-                  <ImageComp
+                  <MaterialIcons
+                    name="navigate-next"
+                    size={28}
+                    color={Color.Blue}
                     onPress={() =>
                       props.navigation.navigate("OrderDetailed", {
                         order: item,
                       })
                     }
-                    Icon
-                    width={20}
-                    height={20}
-                    imageUri={require("../../assets/Icons/next.png")}
                   />
                 </View>
                 <Text style={{ fontSize: 17, color: Color.primary }}>

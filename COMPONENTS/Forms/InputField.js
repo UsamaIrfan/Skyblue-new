@@ -88,13 +88,6 @@ const Input = forwardRef((props, ref) => {
   
   };
 
-  // useEffect(() => {
-  //   if (inputState.touched) {
-  //     inputFieldHandler(inputState.value, inputState.isValid, id);
-  //     console.log("im running");
-  //   }
-  // }, [inputFieldHandler, inputState, counter]);
-
   const onLostFocus = () => {
     setIsFieldFocused(false);
    

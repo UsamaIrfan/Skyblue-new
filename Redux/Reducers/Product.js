@@ -22,53 +22,7 @@ const initialState = {
   catProducts: [],
   subCats: [],
   sliderImages: [],
-  recentProducts: [
-    {
-      Name: "7up Regular 591ML 1Ct",
-      Description: null,
-      ProductPrice: {
-        CurrencyCode: "CAD",
-        OldPrice: null,
-        Price: "$1.05",
-        PriceWithDiscount: null,
-        PriceValue: 1.05,
-        CustomerEntersPrice: false,
-        CallForPrice: false,
-        ProductId: 77,
-        HidePrices: false,
-        IsRental: false,
-        RentalPrice: null,
-        DisplayTaxShippingInfo: false,
-        BasePricePAngV: null,
-        CustomProperties: {},
-      },
-      PictureModels: {
-        DefaultPictureModel: {
-          ImageUrl:
-            "https://skybluewholesale.com/content/images/thumbs/0004975_7up-regular-591ml-1ct_550.jpeg",
-          ThumbImageUrl: null,
-          FullSizeImageUrl:
-            "https://skybluewholesale.com/content/images/thumbs/0004975_7up-regular-591ml-1ct.jpeg",
-          Title: "Picture of 7up Regular 591ML 1Ct",
-          AlternateText: "Picture of 7up Regular 591ML 1Ct",
-          CustomProperties: {},
-        },
-        PictureModels: [
-          {
-            ImageUrl:
-              "https://skybluewholesale.com/content/images/thumbs/0004975_7up-regular-591ml-1ct_550.jpeg",
-            ThumbImageUrl:
-              "https://skybluewholesale.com/content/images/thumbs/0004975_7up-regular-591ml-1ct_100.jpeg",
-            FullSizeImageUrl:
-              "https://skybluewholesale.com/content/images/thumbs/0004975_7up-regular-591ml-1ct.jpeg",
-            Title: "Picture of 7up Regular 591ML 1Ct",
-            AlternateText: "Picture of 7up Regular 591ML 1Ct",
-            CustomProperties: {},
-          },
-        ],
-      },
-    },
-  ],
+  recentProducts: []
 };
 
 export default (state = initialState, action) => {
@@ -90,7 +44,6 @@ export default (state = initialState, action) => {
         }
       case FETCH_PRODUCT:
         if (!state.catProducts) {
-          console.log("INITIAL Products")
         return {
           ...state,
           catProducts: action.catProduct,

@@ -6,21 +6,7 @@ import { ImageComp } from "../UI/Image";
 const { width, height } = Dimensions.get("window");
 
 const ProductListing = (props) => {
-  // const [isFav, setIsFav] = useState({});
 
-  // const dispatch = useDispatch();
-  // const FavHandler = useCallback(
-  //   prod => {
-  //     // setIsFav({ ...isFav, [index]: isFav[index] === true ? false : true });
-  //     // console.log(isFav);
-  //     console.log(prod);
-  //     let isFav = prod.isFav === true ? false : true;
-
-  //     dispatch(productAction.addToFavourite(prod, isFav));
-  //     props.reFetch();
-  //   },
-  //   [dispatch]
-  // );
   return (
     <View
       style={{

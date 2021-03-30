@@ -50,7 +50,6 @@ export const addCategoriesFunc = (pageIndex) => {
         }
       )
       .then((response) => {
-        // console.log(response.data.obj);
         dispatch({
           type: ADD_CATAGORIES,
           Products: response.data.obj,
@@ -89,35 +88,6 @@ export const RecursiveParentChildCategories = (CatId) => {
   };
 };
 
-// demo Login starts here
-// export const fetchProductFunc = (catId, pageIndex) => {
-//   return async (dispatch, getState) => {
-//     const id = getState().Auth.Login.customerId;
-//     console.log(id);
-
-//     const response = await fetch(
-//       `${Api}api/CatalogApi/Products?customerId=${id}&categoryId=${catId}&pageIndex=${0 + pageIndex}&pageSize=8`,
-//       {
-//         method: "POST",
-//       }
-//     );
-
-//     const resData = await response.json();
-
-//     // console.log(resData);
-//     // console.log(resData.success);
-
-//     if (resData.success === false) {
-//       throw new Error(resData.message);
-//     }
-
-//     dispatch({
-//       type: FETCH_PRODUCT,
-//       catProduct: resData.obj,
-//     });
-//     //   saveDataToStorage(token, resData);
-//   };
-// };
 
 export const fetchProductFunc = (catId, pageIndex) => {
   var postData = {};
@@ -133,14 +103,13 @@ export const fetchProductFunc = (catId, pageIndex) => {
         }
       )
       .then((response) => {
-        // console.log("RESPONSE ========>", response);
         dispatch({
           type: FETCH_PRODUCT,
           catProduct: response.data.obj,
         });
       })
       .catch((error) => {
-        throw new Error("Something Went Wrong While Getting Product Listing.");
+        throw new Error("Something Went Wrong While Getting Product Listing (Actions).");
       });
   };
 };
@@ -160,7 +129,6 @@ export const addProductFunc = (catId, pageIndex) => {
         }
       )
       .then((response) => {
-        // console.log("RESPONSE ========>", response);
         dispatch({
           type: FETCH_PRODUCT,
           catProduct: response.data.obj,
@@ -180,29 +148,6 @@ export const setProductEmpty = () => {
   };
 };
 
-// demo Login starts here
-// export const fetchSliderImages = () => {
-//   return async (dispatch, getState) => {
-//     const response = await fetch(`${Api}api/CatalogApi/GetSliderImages`, {
-//       method: "GET",
-//     });
-
-//     const resData = await response.json();
-//     // console.log(resData);
-//     // console.log(resData.success);
-
-//     if (resData.success === false) {
-//       throw new Error(resData.message);
-//     }
-
-//     dispatch({
-//       type: FETCH_SLIDER,
-//       slider: resData.obj,
-//     });
-//     //   saveDataToStorage(token, resData);
-//   };
-// };
-
 export const fetchSliderImages = () => {
   return async (dispatch, getState) => {
     await axios
@@ -210,7 +155,6 @@ export const fetchSliderImages = () => {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        // console.log(response.data);
         dispatch({
           type: FETCH_SLIDER,
           slider: response.data.obj,
@@ -222,36 +166,6 @@ export const fetchSliderImages = () => {
   };
 };
 
-// Recent Products
-// export const getRecentProducts = () => {
-//   return async (dispatch, getState) => {
-//     const id = getState().Auth.Login.customerId;
-
-//     console.log("CUSTOMER ID ========> ", id);
-
-//     const response = await fetch(
-//       `${Api}api/CatalogApi/RecentProducts?customerId=${id}`,
-//       {
-//         method: "POST",
-//       }
-//     );
-
-//     const resData = await response.json();
-
-//     // console.log("PRODUCTS ==============>>>",resData);
-//     // console.log(resData.success);
-
-//     if (resData.success === false) {
-//       throw new Error(resData.message);
-//     }
-
-//     dispatch({
-//       type: RECENT_PRODUCTS,
-//       recentProducts: resData.obj,
-//     });
-//   };
-// };
-
 export const getRecentProducts = () => {
   return async (dispatch, getState) => {
     postData = {};
@@ -261,7 +175,6 @@ export const getRecentProducts = () => {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        // console.log(response.data);
         dispatch({
           type: RECENT_PRODUCTS,
           recentProducts: response.data.obj,

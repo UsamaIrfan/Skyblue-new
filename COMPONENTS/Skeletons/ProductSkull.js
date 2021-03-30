@@ -21,39 +21,31 @@ const ProductSkull = () => {
         speed={1}
       >
         <View>
-            <Rect x={"20"} y="60" rx="5" ry="5" width={width / 2.4} height="100" />
-            <Rect x={"20"} y="170" rx="5" ry="5" width={width / 2.4} height="30" />
-            <Rect x={"20"} y="210" rx="5" ry="5" width={width / 3} height="20" />
+            <Rect x={width * 0.035} y="60" rx="5" ry="5" width={width / 2.4} height="100" />
+            <Rect x={width * 0.035} y="170" rx="5" ry="5" width={width / 2.4} height="30" />
+            <Rect x={width * 0.035} y="210" rx="5" ry="5" width={width / 3} height="20" />
             <Rect x={width / 2 + 10} y="60" rx="5" ry="5" width={width / 2.4} height="100" />
             <Rect x={width / 2 + 10} y="170" rx="5" ry="5" width={width / 2.4} height="30" />
             <Rect x={width / 2 + 10} y="210" rx="5" ry="5" width={width / 3} height="20" />
         </View>
         
         <View>
-            <Rect x={"20"} y="260" rx="5" ry="5" width={width / 2.4} height="100" />
-            <Rect x={"20"} y="370" rx="5" ry="5" width={width / 2.4} height="30" />
-            <Rect x={"20"} y="410" rx="5" ry="5" width={width / 3} height="20" />
+            <Rect x={width * 0.035} y="260" rx="5" ry="5" width={width / 2.4} height="100" />
+            <Rect x={width * 0.035} y="370" rx="5" ry="5" width={width / 2.4} height="30" />
+            <Rect x={width * 0.035} y="410" rx="5" ry="5" width={width / 3} height="20" />
             <Rect x={width / 2 + 10} y="260" rx="5" ry="5" width={width / 2.4} height="100" />
             <Rect x={width / 2 + 10} y="370" rx="5" ry="5" width={width / 2.4} height="30" />
             <Rect x={width / 2 + 10} y="410" rx="5" ry="5" width={width / 3} height="20" />
         </View>
         
         <View>
-            <Rect x={"20"} y="460" rx="5" ry="5" width={width / 2.4} height="100" />
-            <Rect x={"20"} y="570" rx="5" ry="5" width={width / 2.4} height="30" />
-            <Rect x={"20"} y="610" rx="5" ry="5" width={width / 3} height="20" />
+            <Rect x={width * 0.035} y="460" rx="5" ry="5" width={width / 2.4} height="100" />
+            <Rect x={width * 0.035} y="570" rx="5" ry="5" width={width / 2.4} height="30" />
+            <Rect x={width * 0.035} y="610" rx="5" ry="5" width={width / 3} height="20" />
             <Rect x={width / 2 + 10} y="460" rx="5" ry="5" width={width / 2.4} height="100" />
             <Rect x={width / 2 + 10} y="570" rx="5" ry="5" width={width / 2.4} height="30" />
             <Rect x={width / 2 + 10} y="610" rx="5" ry="5" width={width / 3} height="20" />
         </View>
-        {/* <View>
-            <Rect x={"40"} y="300" rx="5" ry="5" width={width / 3} height="200" />
-            <Rect x={width / 2 + 30} y="300" rx="5" ry="5" width={width / 3} height="200" />
-        </View> */}
-        {/* <Rect x="20" y="320" rx="5" ry="5" width={width - 40} height="50" />
-          <Rect x="20" y="380" rx="5" ry="5" width={width - 40} height="50" />
-          <Rect x="20" y="440" rx="5" ry="5" width={width - 40} height="50" />
-          <Rect x="0" y={height - 60} rx="0" ry="0" width={width} height="50" /> */}
       </ContentLoader>
     </View>
   );

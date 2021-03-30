@@ -11,7 +11,7 @@ const Api = "http://skybluewholesale.com:80/";
 
 // demo Login starts here
 
-export const LoginUser = (email, password, navigation) => {
+export const LoginUser = (email, password, navigation, showSimpleMessage) => {
   return async (dispatch) => {
     await axios
       .get(
@@ -21,17 +21,22 @@ export const LoginUser = (email, password, navigation) => {
         }
       )
       .then((response) => {
-        // console.log(response.data);
         if (response.data.success == true) {
           dispatch({
             type: LOGIN,
             Login: response.data,
           });
           navigation.navigate("Home");
+          showSimpleMessage("success", {
+            message: "Logged In successfully.",
+          });
           saveDataToStorage(response.data);
         }
         if (response.data.success === false) {
-          throw new Error(response.data.message);
+          showSimpleMessage("success", {
+            message: "Failed To Login.",
+            description: `${response.data.message}`,
+          });
         }
       })
       .catch((error) => {
@@ -78,7 +83,6 @@ export const registrationFunc = (
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        // console.log(response.data);
         if (response.data.success == true) {
           console.log(response.data);
         }
@@ -86,114 +90,12 @@ export const registrationFunc = (
         if (response.data.success === false) {
           throw new Error(response.data.message);
         }
-        // navigation.navigate("MapMain");
       })
       .catch((error) => {
         throw new Error(error);
       });
   };
 };
-
-//   AGENT REGISTRATION STARTS FORM HERE
-// export const registrationFunc = (
-//   FirstName,
-//   LastName,
-//   CompanyName,
-//   StreetAddress,
-//   StreetAddress2,
-//   PostalCode,
-//   City,
-//   Phone,
-//   Email,
-//   Password,
-//   ConfirmPassword,
-//   CountryId,
-//   StateId
-// ) => {
-//   return async (dispatch, getState) => {
-//     // const userId = getState().auth.userId;
-//     // const token = getState().auth.token;
-//     // console.log(userId);
-//     // console.log(token)
-
-//     try {
-//       const response = await fetch(`${Api}api/AccountApi/Register`, {
-//         method: "POST",
-//         headers: {
-//           "Content-type": "application/json",
-//         },
-//         body: JSON.stringify({
-//           Id: 0,
-//           FirstName,
-//           LastName,
-//           CompanyName,
-//           StreetAddress,
-//           StreetAddress2,
-//           PostalCode,
-//           City,
-//           Phone,
-//           Email,
-//           Password,
-//           ConfirmPassword,
-//           CountryId,
-//           StateId,
-//         }),
-//       });
-
-//       const resData = await response.json();
-//       console.log(resData);
-
-//       if (resData.success === false) {
-//         throw new Error(resData.message);
-//       }
-//       //   dispatch({
-//       //     type: ADD_ADDRESS,
-//       //     Address: {
-//       //       id,
-//       //       FlatNumber,
-//       //       BuildingNumber,
-//       //       RoadNumber,
-//       //       BlockNumber,
-//       //       Location,
-//       //       Nickname,
-//       //       PhoneNumber,
-//       //       ExtraDirection,
-//       //     },
-//       //   });
-//     } catch (err) {
-//       console.log(err.message);
-//       throw err;
-//     }
-//   };
-// };
-
-//  demo Login starts here
-
-// export const UserInfo = () => {
-//   return async (dispatch, getState) => {
-//     const id = getState().Auth.Login.customerId;
-
-//     const response = await fetch(
-//       `${Api}api/AccountApi/Info/${id}`,
-//       {
-//         method: "GET",
-//       }
-//     );
-
-//     const resData = await response.json();
-//     console.log(resData);
-//     // console.log(resData.success);
-
-//     if (resData.success === false) {
-//       throw new Error(resData.message);
-//     }
-
-//     dispatch({
-//       type: USER_INFO,
-//       Info: resData,
-//     });
-//   };
-// };
 
 export const UserInfo = (email, password, navigation) => {
   return async (dispatch, getState) => {
@@ -203,7 +105,6 @@ export const UserInfo = (email, password, navigation) => {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        // console.log(response.data);
         console.log(response.data);
         dispatch({
           type: USER_INFO,
@@ -218,68 +119,6 @@ export const UserInfo = (email, password, navigation) => {
       });
   };
 };
-
-//  PROFILE EDIT STARTS HERE
-
-// export const profileEditHandler = (
-//   FirstName,
-//   LastName,
-//   CompanyName,
-//   StreetAddress,
-//   StreetAddress2,
-//   PostalCode,
-//   City,
-//   Phone,
-//   Email,
-//   Password,
-//   ConfirmPassword,
-//   CountryId,
-//   StateId
-// ) => {
-//   return async (dispatch, getState) => {
-//     const id = getState().Auth.Login.customerId;
-
-//     const response = await fetch(
-//       `http://skybluewholesale.com:80/api/AccountApi/EditInfo`,
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-type": "application/json",
-//         },
-//         body: JSON.stringify({
-//           Id: id,
-//           FirstName,
-//           LastName,
-//           CompanyName,
-//           StreetAddress,
-//           StreetAddress2,
-//           PostalCode,
-//           City,
-//           Phone,
-//           Email,
-//           Password,
-//           ConfirmPassword,
-//           CountryId,
-//           StateId,
-//         }),
-//       }
-//     );
-
-//     const resData = await response.json();
-//     console.log(resData);
-//     // console.log(resData.success);
-
-//     if (resData.success === false) {
-//       throw new Error(resData.message);
-//     }
-
-//     // dispatch({
-//     //   type: USER_INFO,
-//     //   Info: resData,
-
-//     // });
-//   };
-// };
 
 export const profileEditHandler = (
   FirstName,
@@ -319,7 +158,6 @@ export const profileEditHandler = (
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        // console.log(response.data);
         if (response.data.success == true) {
           console.log(response.data);
         }
@@ -327,7 +165,6 @@ export const profileEditHandler = (
         if (response.data.success === false) {
           throw new Error(response.data.message);
         }
-        // navigation.navigate("MapMain");
       })
       .catch((error) => {
         throw new Error(error);
@@ -344,7 +181,6 @@ export const LogoutFunc = (email, password, navigation) => {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        // console.log(response.data);
         console.log(response.data);
         dispatch({
           type: LOGOUT,
@@ -356,32 +192,6 @@ export const LogoutFunc = (email, password, navigation) => {
       });
   };
 };
-
-// export const LogoutFunc = () => {
-//   return async (dispatch, getState) => {
-//     try {
-//       const response = await fetch(
-//         `http://skybluewholesale.com:80/api/AccountApi/LogOut`,
-//         {
-//           method: "GET",
-//         }
-//       );
-
-//       if (!response.ok) {
-//         throw new Error("Something Went Wrong");
-//       }
-//       const resData = await response.json();
-//       console.log(resData);
-
-//       dispatch({
-//         type: LOGOUT,
-//       });
-//     } catch (err) {
-//       console.log(err.message);
-//       throw err;
-//     }
-//   };
-// };
 
 // / demo Login starts here
 
@@ -416,7 +226,6 @@ export const fetchCountry = () => {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        // console.log(response.obj);
         dispatch({
           type: COUNTRIES,
           country: response.data.obj,

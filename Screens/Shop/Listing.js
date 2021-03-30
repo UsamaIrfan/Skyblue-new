@@ -159,30 +159,14 @@ const Listing = ({ route, navigation }) => {
         alignItems: "center",
         paddingHorizontal: width * 0.03,
       }}
-    >
-      {/* <View style={{ ...styles.iconInput, zIndex: 3 }}>
-        <FontAwesome
-          name="search"
-          size={24}
-          color={colors.Blue}
-          style={styles.icon}
-        />
-        <TextInput
-          value={Search}
-          onChangeText={setSearch}
-          style={{ flex: 1 }}
-          placeholder="Search"
-          
-        />
-        <FontAwesome
-          name="filter"
-          size={24}
-          color={colors.Blue}
-          style={styles.icon}
-        />
-      </View> */}
-    </View>
+    ></View>
   );
+
+  if (isLoading) {
+    <View>
+      <ProductSkull />
+    </View>;
+  }
 
   const renderEmpty = () => (
     <View
@@ -197,37 +181,37 @@ const Listing = ({ route, navigation }) => {
     </View>
   );
 
-  if (isLoading)
-    <View>
-      <ProductSkull />
-    </View>;
-
   return (
-    <View style={{ flex: 1 }}>
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          paddingTop: 10,
-          marginBottom: 20,
-        }}
-      >
-        <FlatList
-          data={ProductsAvailable}
-          renderItem={renderList}
-          keyExtractor={(item, index) => index.toString()}
-          numColumns={2}
-          refreshing={Reloading}
-          ListHeaderComponentStyle={{ paddingBottom: 10 }}
-          // onEndReached={reload}
-          ListHeaderComponent={renderHeader}
-          ListEmptyComponent={renderEmpty}
-          onRefresh={() => reload()}
-          onEndReachedThreshold={1}
-          onEndReached={reload}
-          onEndReachedCalledDuringMomentum={true}
-        />
-      </View>
+    <View style={{ flex: 1, marginBottom: 60 }}>
+      {isLoading ? (
+        <ProductSkull />
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            paddingTop: 10,
+            // marginBottom: 20,
+          }}
+        >
+          {ProductsAvailable && (
+            <FlatList
+              data={ProductsAvailable}
+              renderItem={renderList}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={2}
+              refreshing={Reloading}
+              ListHeaderComponentStyle={{ paddingBottom: 10 }}
+              ListHeaderComponent={renderHeader}
+              ListEmptyComponent={renderEmpty}
+              onRefresh={() => reload()}
+              onEndReachedThreshold={1}
+              onEndReached={reload}
+              onEndReachedCalledDuringMomentum={true}
+            />
+          )}
+        </View>
+      )}
     </View>
   );
 };

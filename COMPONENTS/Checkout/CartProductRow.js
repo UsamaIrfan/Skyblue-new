@@ -1,20 +1,15 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Text, Image, ColorPropType } from "react-native";
+import { View, Text, Image, ColorPropType, Dimensions } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import ImageComp from "../../COMPONENTS/UI/Image";
-import { colors as Color, MaterialIcons } from "../../Constant";
+import { colors as Color, colors, MaterialIcons } from "../../Constant";
+
+const {width} = Dimensions.get("window")
 
 const CartProductRow = (props) => {
-  // console.log(quantityalraedy);
-  // console.log(props.quantity);
   const [quantity, setQuantity] = useState();
   const [subquantity, setsubQuantity] = useState(0);
   const [isAdd, setIsAdd] = useState(false);
-
-  // useEffect(() => {
-  //   setQuantity(props.quantity);
-  //   console.log("we are running and quanity is " + props.quantity);
-  // }, []);
-
   const setQuantityHandler = useCallback(async () => {
     await setQuantity(props.quantity);
   }, []);
@@ -28,10 +23,6 @@ const CartProductRow = (props) => {
       if (props.checkout) {
         return;
       }
-      // console.log("i m called");
-      // console.log(quantity);
-      // console.log(subquantity);
-      // console.log(quan);
       if (quan === "minus") {
         if (quantity > 0) {
           setQuantity(quantity - 1);
@@ -49,7 +40,6 @@ const CartProductRow = (props) => {
   );
 
   const sendQuan = (quan) => {
-    console.log(quan);
     props.quantityReturnBack(quan, props.id);
   };
 
@@ -70,6 +60,8 @@ const CartProductRow = (props) => {
           width: "30%",
           height: 110,
           backgroundColor: "white",
+          borderRadius: 10,
+          overflow: "hidden"
         }}
       >
         <ImageComp Icon imageUri={props.imageUrl} width="100%" height="100%" />
@@ -94,7 +86,12 @@ const CartProductRow = (props) => {
             <MaterialIcons name="cancel" size={24} color={Color.Blue} />
           )}
           {props.cancel ? (
-            <MaterialIcons onPress={props.onPressCancel} name="cancel" size={24} color={Color.Blue} />
+            <MaterialIcons
+              onPress={props.onPressCancel}
+              name="cancel"
+              size={24}
+              color={Color.Blue}
+            />
           ) : null}
         </View>
         <View
@@ -108,9 +105,31 @@ const CartProductRow = (props) => {
           }}
         >
           {props.checkout ? (
-            <Text style={{ fontSize: 17, color: Color.primary}}>
-              Qty: {props.quantity}
-            </Text>
+            <>
+              <Text style={{ fontSize: 17, color: Color.primary }}>
+                Qty: {props.quantity}
+              </Text>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() =>
+                  props.ModalDataHandler(props.allowedQuantities, props.id)
+                }
+              >
+                <Text
+                  style={{
+                    borderRadius: 8,
+                    fontFamily: "Regular",
+                    paddingVertical: 3,
+                    paddingHorizontal: 5,
+                    fontSize: width * 0.04,
+                    backgroundColor: Color.Blue,
+                    color: "#fff",
+                  }}
+                >
+                  Update
+                </Text>
+              </TouchableOpacity>
+            </>
           ) : (
             <View
               style={{
@@ -140,7 +159,17 @@ const CartProductRow = (props) => {
               />
             </View>
           )}
-          <Text style={{ fontSize: 18, backgroundColor: Color.Blue, paddingVertical: 3, paddingHorizontal: 5, borderRadius: 8, color: "#fff"  }}>
+          <Text
+            style={{
+              fontSize: width * 0.04,
+              backgroundColor: Color.Blue,
+              paddingVertical: 3,
+              paddingHorizontal: 5,
+              borderRadius: 8,
+              color: "#fff",
+              fontFamily: "Regular",
+            }}
+          >
             {props.price}
           </Text>
         </View>

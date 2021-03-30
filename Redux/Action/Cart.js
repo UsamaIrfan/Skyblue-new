@@ -17,12 +17,10 @@ export const fetchCartData = () => {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        console.log("CART ====>",response.data);
         dispatch({
           type: FETCH_CART_DATA,
           CartProducts: response.data,
         });
-        // navigation.navigate("MapMain");
       })
       .catch((error) => {
         console.log(error);
@@ -30,39 +28,6 @@ export const fetchCartData = () => {
       });
   };
 };
-
-// export const addToCart = (
-//   id,
-//   title,
-//   imageUrl,
-//   price,
-//   discountPrice,
-//   quantity
-// ) => {
-//   return async (dispatch, getState) => {
-//     const response = await fetch(
-//       `https://flower-327fe.firebaseio.com/cart/1C9JhZJcqKO3Q0wh4pqJ93OqRE02.json`,
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-type": "application/json",
-//         },
-//         body: JSON.stringify({
-//           id,
-//           title,
-//           imageUrl,
-//           price,
-//           discountPrice,
-//           quantity,
-//         }),
-//       }
-//     );
-
-//     if (!response.ok) {
-//       throw new Error("Product Cant be Updated Server Busy");
-//     }
-//   };
-// };
 
 export const addToCart = (
   id,
@@ -124,29 +89,10 @@ export const addToCartUpdate = (
     );
 
     if (!response.ok) {
-      throw new Error("Product Cant be Updated Server Busy");
+      throw new Error("Product Cant be Added Server Busy");
     }
   };
 };
-
-// export const deleteCart = (cartId) => {
-//   return async (dispatch, getState) => {
-//     const id = getState().Auth.Login.customerId;
-//     const response = await fetch(
-//       `http://skybluewholesale.com:80/api/CatalogApi/RemoveItemFromCart?customerId=${id}&shoppingCartId=${cartId}`,
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-type": "application/json",
-//         },
-//       }
-//     );
-//     const resData = await response.json();
-//     // console.log(resData)
-
-//     // dispatch({ type: DELETE_CART_PRODUCT, cId: cId });
-//   };
-// };
 
 export const deleteCart = (cartId) => {
   var postData = {};
@@ -161,127 +107,10 @@ export const deleteCart = (cartId) => {
 
       })
       .catch((error) => {
-          throw new Error("Product Cant be Updated Server Busy");
+          throw new Error("Product Cant be Deleted Server Busy");
       });
   };
 };
-
-// export const deleteCart = (cartId) => {
-//   var postData = {};
-
-//   return async (dispatch, getState) => {
-//     const id = getState().Auth.Login.customerId;
-//     await axios
-//       .post(`${Api}api/CatalogApi/RemoveItemFromCart?customerId=${id}&shoppingCartId=${cartId}`, postData, {
-//         headers: { "Content-Type": "application/json" },
-//       })
-//       .then((response) => {
-
-//       })
-//       .catch((error) => {
-//           throw new Error("Product Cant be Updated Server Busy");
-//       });
-//   };
-// };
-
-
-// export const addToOrder = (
-//   deliveryAddress,
-//   deliveryDate,
-//   deliveryTime,
-//   giftMessage,
-//   extraInformation,
-//   cartProducts,
-//   paymentMethod,
-//   totalAmount
-// ) => {
-//   return async (dispatch, getState) => {
-//     const token = getState().auth.token;
-//     const userId = getState().auth.userId;
-//     const date = new Date();
-//     try {
-//       const response = await fetch(
-//         `https://flower-327fe.firebaseio.com/order/${userId}.json?auth=${token}`,
-//         {
-//           method: "POST",
-//           headers: {
-//             "Content-type": "application/json"
-//           },
-//           body: JSON.stringify({
-//             deliveryAddress,
-//             deliveryDate,
-//             deliveryTime,
-//             giftMessage,
-//             extraInformation,
-//             cartProducts,
-//             paymentMethod,
-//             totalAmount,
-//             orderDate: date.toISOString()
-//           })
-//         }
-//       );
-
-//       if (!response.ok) {
-//         throw new Error("Something Went Wrong");
-//       }
-//       const resData = await response.json();
-
-//       const response1 = await fetch(
-//         `https://flower-327fe.firebaseio.com/cart/${userId}.json?auth=${token}`,
-//         {
-//           method: "DELETE"
-//         }
-//       );
-
-//       dispatch({
-//         type: ADD_ORDER,
-
-//         orderDetails: {
-//           id: resData.name,
-//           deliveryAddress,
-//           deliveryDate,
-//           deliveryTime,
-//           giftMessage,
-//           extraInformation,
-//           cartProducts,
-//           paymentMethod,
-//           totalAmount,
-//           orderDate: date
-//         }
-//       });
-//     } catch (err) {
-//       console.log(err.message);
-//       throw err;
-//     }
-//   };
-// };
-
-// export const fetchOrder = () => {
-//   return async (dispatch, getState) => {
-//     const id = getState().Auth.Login.customerId;
-//     try {
-//       const response = await fetch(
-//         `http://skybluewholesale.com:80/api/CatalogApi/CustomerOrder?customerId=${id}`,
-//         { method: "POST" }
-//       );
-
-//       if (!response.ok) {
-//         throw new Error("Something Went Wrong");
-//       }
-
-//       const resData = await response.json();
-//       // console.log(resData)
-
-//       dispatch({
-//         type: FETCH_ORDER,
-//         Order: resData.Orders,
-//       });
-//     } catch (err) {
-//       console.log(err.message);
-//       throw err;
-//     }
-//   };
-// };
 
 export const fetchOrder = () => {
   var postData = {};
@@ -303,33 +132,6 @@ export const fetchOrder = () => {
       });
   };
 };
-
-// export const fetchCountCart = () => {
-//   return async (dispatch, getState) => {
-//     const id = getState().Auth.Login.customerId;
-//     try {
-//       const response = await fetch(
-//         `http://skybluewholesale.com:80/api/CatalogApi/CartCount?customerId=${id}`,
-//         { method: "POST" }
-//       );
-
-//       if (!response.ok) {
-//         throw new Error("Something Went Wrong");
-//       }
-
-//       const resData = await response.json();
-//       // console.log(resData)
-
-//       dispatch({
-//         type: FETCH_CART_COUNT,
-//         Count: resData.Count,
-//       });
-//     } catch (err) {
-//       console.log(err.message);
-//       throw err;
-//     }
-//   };
-// };
 
 export const fetchCountCart = () => {
   var postData = {};
