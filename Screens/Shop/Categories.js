@@ -91,7 +91,7 @@ const Categories = ({ navigation }) => {
       <FlatList
         data={categoriesFetch}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index.toString()}
         horizontal={false}
         numColumns={2}
         ListFooterComponent={renderFooter}

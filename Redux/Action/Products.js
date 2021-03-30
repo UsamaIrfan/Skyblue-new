@@ -31,7 +31,7 @@ export const fetchCategoriesFunc = (pageSize = 6) => {
       })
       .catch((error) => {
         console.log(error);
-        throw new Error("Something Went Wrong While Getting Product Listing.");
+        throw new Error("Something Went Wrong While Getting Categories 1.");
       });
   };
 };
@@ -58,7 +58,7 @@ export const addCategoriesFunc = (pageIndex) => {
       })
       .catch((error) => {
         console.log(error);
-        throw new Error("Something Went Wrong While Getting Product Listing.");
+        throw new Error("Something Went Wrong While Getting Add Categories.");
       });
   };
 };
@@ -84,7 +84,7 @@ export const RecursiveParentChildCategories = (CatId) => {
       })
       .catch((error) => {
         console.log(error);
-        throw new Error("Something Went Wrong While Getting Product Listing.");
+        throw new Error("Something Went Wrong While RecursiveParentChildCategories.");
       });
   };
 };
@@ -167,7 +167,7 @@ export const addProductFunc = (catId, pageIndex) => {
         });
       })
       .catch((error) => {
-        throw new Error("Something Went Wrong While Getting Product Listing.");
+        throw new Error("Something Went Wrong While Adding Product Listing.");
       });
   };
 };

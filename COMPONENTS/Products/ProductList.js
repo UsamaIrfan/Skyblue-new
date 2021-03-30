@@ -184,7 +184,7 @@ const ProductListing = (props) => {
             </View>
           </View>
           <TouchableOpacity onPress={props.onPressSec}>
-          <Feather name="shopping-bag" size={24} color={colors.Blue} />
+            <Feather name="shopping-bag" size={24} color={colors.Blue} />
           </TouchableOpacity>
         </View>
       </View>

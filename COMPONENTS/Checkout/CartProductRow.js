@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { View, Text, Image, ColorPropType } from "react-native";
-import ImageComp from '../../COMPONENTS/UI/Image'
-import {colors as Color, colors} from "../../Constant";
+import ImageComp from "../../COMPONENTS/UI/Image";
+import { colors as Color, MaterialIcons } from "../../Constant";
 
-const CartProductRow = props => {
+const CartProductRow = (props) => {
   // console.log(quantityalraedy);
   // console.log(props.quantity);
   const [quantity, setQuantity] = useState();
@@ -23,7 +23,7 @@ const CartProductRow = props => {
     setQuantityHandler();
   }, []);
   const quantityHandler = useCallback(
-    quan => {
+    (quan) => {
       let quantemp = 0;
       if (props.checkout) {
         return;
@@ -48,36 +48,10 @@ const CartProductRow = props => {
     [quantity]
   );
 
-  const sendQuan = quan => {
+  const sendQuan = (quan) => {
     console.log(quan);
     props.quantityReturnBack(quan, props.id);
   };
-
-  // useEffect(() => {
-  //   if (props.checkout) {
-  //     return;
-  //   }
-  //   if (quantity) {
-  //     console.log("motherfucker i m called");
-  //     props.quantityReturnBack(quantity, props.id);
-  //   }
-  // }, [quantity]);
-
-//   useEffect(() => {
-//     if (props.checkout) {
-//       return;
-//     } else {
-//       const willFocusSub = props.navigation.addListener(
-//         "willFocus",
-//         setQuantityHandler
-//       );
-//       console.log("i m running second");
-
-//       return () => {
-//         willFocusSub.remove();
-//       };
-//     }
-//   }, [setQuantityHandler]);
 
   return (
     <View
@@ -88,14 +62,14 @@ const CartProductRow = props => {
         borderBottomColor: "#e5e5e5",
         borderBottomWidth: 1,
 
-        flexDirection: "row"
+        flexDirection: "row",
       }}
     >
       <View
         style={{
           width: "30%",
           height: 110,
-          backgroundColor: "white"
+          backgroundColor: "white",
         }}
       >
         <ImageComp Icon imageUri={props.imageUrl} width="100%" height="100%" />
@@ -109,29 +83,19 @@ const CartProductRow = props => {
             flexDirection: "row",
 
             justifyContent: "space-between",
-            alignItems:"flex-start"
+            alignItems: "flex-start",
           }}
         >
           <View style={{ width: "85%" }}>
             <Text style={{ fontSize: 16 }}>{props.title}</Text>
           </View>
 
-          {props.checkout  ? null : (
-            <ImageComp
-            style={{marginTop:10}}
-              imageUri={require("../../assets/Icons/cancel.png")}
-              onPress={props.onPressCancel}
-              width={17}
-              height={17}
-            />
+          {props.checkout ? null : (
+            <MaterialIcons name="cancel" size={24} color={Color.Blue} />
           )}
-          {props.cancel  ? <ImageComp
-            style={{marginTop:10}}
-              imageUri={require("../../assets/Icons/cancel.png")}
-              onPress={props.onPressCancel}
-              width={17}
-              height={17}
-            /> : null}
+          {props.cancel ? (
+            <MaterialIcons onPress={props.onPressCancel} name="cancel" size={24} color={Color.Blue} />
+          ) : null}
         </View>
         <View
           style={{
@@ -140,11 +104,11 @@ const CartProductRow = props => {
             paddingLeft: 10,
             flexDirection: "row",
             justifyContent: "space-between",
-            alignItems: "flex-end"
+            alignItems: "flex-end",
           }}
         >
           {props.checkout ? (
-            <Text style={{ fontSize: 17, color: Color.primary }}>
+            <Text style={{ fontSize: 17, color: Color.primary}}>
               Qty: {props.quantity}
             </Text>
           ) : (
@@ -154,21 +118,20 @@ const CartProductRow = props => {
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
-                backgroundColor:colors.Blue,
-                borderRadius:125,
-                paddingHorizontal:12,
-                height:40
-
+                backgroundColor: colors.Blue,
+                borderRadius: 125,
+                paddingHorizontal: 12,
+                height: 40,
               }}
             >
               <ImageComp
-              Icon
+                Icon
                 imageUri={require("../../assets/Icons/minus.png")}
                 onPress={() => quantityHandler("minus")}
                 width={15}
                 height={15}
               />
-              <Text style={{ fontSize: 17, color:'white' }}>{quantity}</Text>
+              <Text style={{ fontSize: 17, color: "white" }}>{quantity}</Text>
               <ImageComp
                 imageUri={require("../../assets/Icons/plus.png")}
                 onPress={() => quantityHandler("add")}
@@ -177,7 +140,7 @@ const CartProductRow = props => {
               />
             </View>
           )}
-          <Text style={{ fontSize: 18, color: Color.primary }}>
+          <Text style={{ fontSize: 18, backgroundColor: Color.Blue, paddingVertical: 3, paddingHorizontal: 5, borderRadius: 8, color: "#fff"  }}>
             {props.price}
           </Text>
         </View>

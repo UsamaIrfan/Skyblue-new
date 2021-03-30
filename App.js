@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MainNavigator from "./NAVIGATOR/Navigator";
-
+import FlashMessage from "react-native-flash-message";
 // FONTS LOAD
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
@@ -50,6 +50,7 @@ export default function App() {
       <MainNavigator>
         <StatusBar style="auto" />
       </MainNavigator>
+      <FlashMessage />
     </Provider>
   );
 }

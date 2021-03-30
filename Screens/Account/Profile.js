@@ -22,6 +22,7 @@ import Modal from "react-native-modal";
 import { ScrollView } from "react-native-gesture-handler";
 import Button from "../../COMPONENTS/Button";
 import * as authActions from "../../Redux/Action/Auth";
+import {showSimpleMessage} from "../../Redux/Action/General";
 import { useDispatch, useSelector } from "react-redux";
 
 import { colors } from "../../Constant";
@@ -271,17 +272,11 @@ const UserInfo = ({ navigation, route }) => {
           )
         );
         setIsLoading(false);
-
-        Alert.alert(
-          "Profile Updated!",
-          "Your Profile has been sucessfully update",
-          [{ text: "OK" }]
-        );
-      } catch (err) {
-        Alert.alert("Something Went Wrong!", err.message, [
-          { text: "TRY AGAIN" },
-        ]);
-        setIsLoading(false);
+  
+      showSimpleMessage("success", {message: "Success", description: "Profile Updated Successfully."})
+    } catch (err) {
+      showSimpleMessage("warning", {message: "Failed", description: `${err.message}`})
+      setIsLoading(false);
       }
     } else {
       console.log("not work");
@@ -378,7 +373,7 @@ const UserInfo = ({ navigation, route }) => {
   // End Code for Pick Image
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white", paddingTop: 10 }}>
+    <View style={{ flex: 1, backgroundColor: "white", paddingTop: 10, marginBottom: 60, }}>
       {/* This Modal is for COuntry and state */}
       <Modal
         style={{ margin: 0, marginBottom: 0 }}

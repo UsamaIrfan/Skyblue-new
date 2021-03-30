@@ -16,6 +16,8 @@ import SingleRadio from "../../COMPONENTS/UI/SingleRadio";
 // import * as cartAction from "../../Redux/Action/cart";
 import {colors as Color} from "../../Constant";
 import SuccessScreen from '../../COMPONENTS/UI/SuccessScreen'
+import Loader from "../../COMPONENTS/Loader";
+import {showSimpleMessage} from "../../Redux/Action/General"
 
 const Checkout = (props) => {
  
@@ -35,14 +37,6 @@ const Checkout = (props) => {
   const products = useSelector((state) => state.Cart.cart);
   const userId = useSelector((state) => state.Auth.Login.customerId);
 
-
-
-
-//   const addresses = useSelector((state) => state.address.address);
-//   const selectedAddressOne = addresses.filter(
-//     (item) => item.id === selectedAddress[0].id
-//   );
-
   const setPaymentHandler = (paymentSet) => {
     setPayment(payment === paymentSet ? "" : paymentSet);
   };
@@ -52,46 +46,8 @@ const Checkout = (props) => {
 
   const dispatch = useDispatch();
 
-//   const fetchAddressData = useCallback(async () => {
-//     setIsLoading(true);
-//     await dispatch(addressAction.fetchAddress());
-//     setIsLoading(false);
-//   }, []);
-
-//   useEffect(() => {
-//     fetchAddressData();
-//   }, []);
-
-//   useEffect(() => {
-//     const willFocusSub = props.navigation.addListener(
-//       "willFocus",
-//       fetchAddressData
-//     );
-//     console.log("i m running third");
-
-//     return () => {
-//       willFocusSub.remove();
-//     };
-//   }, [fetchAddressData]);
-  // useEffect(() => {
-  //   let subTotal = 0;
-  //   for (let key in products) {
-  //     subTotal = subTotal + products[key].price * products[key].quanity;
-  //   }
-  //   setSubTotal(subTotal);
-  // }, []);
-
   const proceedCheckoutHandler = async () => {
     if (isTerms) {
-      // id,
-      //   deliveryAddress,
-      //   deliveryDate,
-      //   deliveryTime,
-      //   giftMessage,
-      //   extraInformation,
-      //   cartProducts,
-      //   paymentMethod,
-      //   totalAmount;
 
       setOrderConfirm(false);
       setIsLoading(true);
@@ -115,41 +71,25 @@ const Checkout = (props) => {
         console.log(resData);
         setCustomerName(resData.CustomerName)
       } catch (err) {
-        Alert.alert('Something went wrong!', err.message);
+      showSimpleMessage("warning", {message: "Something Went Wrong", description: `${err.message}`})
       }
       setIsLoading(false);
       setOrderConfirm(true);
     } else {
-      Alert.alert(
-        "ACCEPT CONDITIONS",
-        "You must accept the terms & conditions to proceed this order",
-        [{ text: "Okay" }]
-      );
+      showSimpleMessage("warning", {message: "ACCEPT CONDITIONS", description: "You must accept the terms & conditions to proceed this order"})
     }
   };
 
-  // if (isOrderConfirm === true) {
-  //   return (
-  //     <EmptyScreen
-  //       imageUri={require("../../assets/Home/CHECKOUT/confirm.png")}
-  //       title="AHMED BELLO,
-  //       THANK YOU FOR YOUR ORDER!"
-  //       description="You will receive a confirmation email
-  //       with the details of your order."
-  //     />
-  //   );
-  // }
   if (isLoading === true) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size={55} color={Color.primary} />
-        <Text>Please wait..</Text>
+        <Loader />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, marginBottom: 60, }}>
   
       {isOrderConfirm === true ? (
         <SuccessScreen

@@ -17,6 +17,7 @@ const ProductSkull = () => {
       <ContentLoader
         backgroundColor="#ccc"
         foregroundColor={colors.Blue}
+        fillOpacity={0.5}
         speed={1}
       >
         <View>

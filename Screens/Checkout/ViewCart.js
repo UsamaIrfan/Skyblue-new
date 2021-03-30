@@ -5,8 +5,7 @@ import {
   FlatList,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
-  ActivityIndicator,
+  Modal,
   Alert,
 } from "react-native";
 
@@ -177,9 +176,7 @@ const ViewCart = (props) => {
     setIsDelete(false);
   }, []);
   if (isFetch === true) {
-    return (
-      <ProductSkull />
-    );
+    return <ProductSkull />;
   }
 
   return (
@@ -188,6 +185,101 @@ const ViewCart = (props) => {
         <ProductSkull />
       ) : (
         <View style={{ flex: 1 }}>
+          <Modal
+            style={{ margin: 0, marginBottom: 0 }}
+            isVisible={isQuantity}
+            deviceWidth={width}
+            deviceHeight={height}
+            // onBackdropPress={() => setIsVisible(false)}
+            swipeDirection="down"
+            // onSwipeComplete={() => setIsVisible(false)}
+            // useNativeDriver={true}
+            // hideModalContentWhileAnimating={true}
+          >
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  width: "75%",
+
+                  backgroundColor: "white",
+                  borderRadius: 10,
+                  paddingHorizontal: 15,
+                  paddingTop: 10,
+                  paddingBottom: 20,
+                }}
+              >
+                <View
+                  style={{
+                    width: "100%",
+                    paddingHorizontal: 10,
+                    alignItems: "flex-end",
+                    marginTop: 10,
+                  }}
+                >
+                  <ImageComp
+                    onPress={() => setIsQuantity(false)}
+                    width={22}
+                    height={22}
+                    imageUri={require("../../assets/Icons/cancel.png")}
+                  ></ImageComp>
+                </View>
+                <View style={{ width: "100%", alignItems: "center" }}>
+                  <Text style={{ fontFamily: "Bold", fontSize: 18 }}>
+                    Select Quantity
+                  </Text>
+                  <View
+                    style={{
+                      width: "100%",
+                      marginTop: 35,
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: "100%",
+                        marginBottom: 20,
+                        maxHeight: 350,
+                      }}
+                    >
+                      <ScrollView>
+                        {productSelect.AllowedQuantities.map((item) => (
+                          <TouchableOpacity
+                            onPress={() => setQuantityHandler(item.Value)}
+                            key={item.Id}
+                            style={{
+                              width: "100%",
+                              backgroundColor:
+                                item.Value === quantity ? "#e5e5e5" : null,
+
+                              alignItems: "center",
+                              justifyContent: "center",
+                              height: 50,
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 16,
+
+                                color: "#747474",
+                              }}
+                            >
+                              {item.Value}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </ScrollView>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </Modal>
           {cartProducts.Items?.length === 0 ? (
             <View
               style={{

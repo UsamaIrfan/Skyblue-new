@@ -7,8 +7,11 @@ import {
   ActivityIndicator,
   StyleSheet,
   Dimensions,
+  Platform,
   Share,
   Alert,
+  TextInput,
+  KeyboardAvoidingView,
 } from "react-native";
 // import Header from "../Components/Header";
 import ImageComp from "../../COMPONENTS/UI/Image";
@@ -22,6 +25,8 @@ import Swiper from "react-native-swiper";
 import Modal from "react-native-modal";
 import * as cartActions from "../../Redux/Action/Cart";
 import Loader from "../../COMPONENTS/Loader";
+import ModalDropdown from "react-native-modal-dropdown";
+import {showSimpleMessage} from "../../Redux/Action/General"
 
 const { width, height } = Dimensions.get("window");
 
@@ -32,7 +37,7 @@ const Detailed = (props) => {
     require("../../assets/Images/slide1.jpg"),
   ]);
   const [isQuantity, setIsQuantity] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(props.route.params?.item?.AllowedQuantities[0]?.Value ? props.route.params?.item.AllowedQuantities[0].Value : 1);
   const [isLoading, setIsLoading] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
   const [isAddSuccess, setIsAddSuccess] = useState(false);
@@ -46,6 +51,8 @@ const Detailed = (props) => {
   // console.log(productSelect.ProductPrice.ProductId);
   // console.log(productSelect.AllowedQuantities.length);
   const dispatch = useDispatch();
+
+  // console.log(props.item.AllowedQuantities[0].Value)
 
   //   const products = useSelector(state => state.product.products);
   // ADD TO CART HANDLER
@@ -69,10 +76,10 @@ const Detailed = (props) => {
 
       const resData = await response.json();
       console.log(resData);
-      Alert.alert("Successfully Add", "Product successfully add to cart");
+      showSimpleMessage("success", {message: "Success.", description: "Product Added to Your Cart."})
       await dispatch(cartActions.fetchCountCart());
     } catch (err) {
-      Alert.alert("Something went wrong!", err.message);
+      showSimpleMessage("warning", {message: "Unable To add Product to Cart.", description: `${err.message}`})
     }
     setIsLoading(false);
   };
@@ -106,7 +113,7 @@ const Detailed = (props) => {
             imageUri={require("../../assets/Icons/share.png")}
           />
           <ImageComp
-            onPress={() => props.navigation.navigate("Bag")}
+            onPress={() => props.navigation.navigate("Cart", {screen: "ViewCart"})}
             style={{ marginRight: 20 }}
             Icon
             width={26}
@@ -132,106 +139,12 @@ const Detailed = (props) => {
     });
   }, [count]);
 
-  //   const cartProducts = useSelector(state => state.cart.cart);
-
-  //   //Fetch Data
-  //   const dispatch = useDispatch();
-  //   const fetchCartData = useCallback(async () => {
-  //     console.log("calling Fetch Data");
-
-  //     setIsLoading(true);
-  //     await dispatch(productAction.fetchData());
-  //     setIsLoading(false);
-  //   }, [dispatch]);
-  //   useEffect(() => {
-  //     fetchCartData().then(() => {
-  //       console.log("iCalled");
-  //     });
-  //   }, [fetchCartData]);
-
-  //   // FETCH CART DATA
-  //   const fetchViewCartData = useCallback(async () => {
-  //     console.log("calling Fetch Data");
-
-  //     setIsLoading(true);
-  //     await dispatch(cartAction.fetchCartData());
-  //     setIsLoading(false);
-  //   }, [dispatch]);
-  //   useEffect(() => {
-  //     fetchViewCartData().then(() => {
-  //       console.log("iCalled");
-  //     });
-  //   }, [fetchViewCartData, addToCartHandler, isAdd]);
-
-  //   // add to Fav
-  //   const FavHandler = useCallback(
-  //     prod => {
-  //       // setIsFav({ ...isFav, [index]: isFav[index] === true ? false : true });
-  //       // console.log(isFav);
-  //       console.log(prod);
-  //       let isFav = prod.isFav === true ? false : true;
-
-  //       dispatch(productAction.addToFavourite(prod, isFav));
-  //       fetchCartData();
-  //     },
-  //     [dispatch]
-  //   );
-
-  //   const addToCartHandler = async () => {
-  //     const { title, imageUrl, price, discountPrice, id } = productSelect;
-  //     const isAvail = cartProducts.filter(item => item.prodId === id);
-
-  //     if (quantity === 0) {
-  //       Alert.alert(
-  //         "Please Select quantity",
-  //         "You cant add to cart without selecting quantity",
-  //         [{ text: "OK" }]
-  //       );
-  //       return;
-  //     }
-  //     console.log(isAvail.length);
-  //     // console.log(isAvail);
-  //     if (isAvail.length === 0) {
-  //       setIsAdd(true);
-  //       await dispatch(
-  //         cartAction.addToCart(
-  //           id,
-  //           title,
-  //           imageUrl,
-  //           price,
-  //           discountPrice,
-  //           quantity
-  //         )
-  //       );
-  //       setIsAdd(false);
-  //       setIsAddSuccess(true);
-  //     }
-  //     if (isAvail.length === 1) {
-  //       setIsAdd(true);
-  //       await dispatch(
-  //         cartAction.addToCartUpdate(
-  //           isAvail[0].id,
-  //           id,
-  //           title,
-  //           imageUrl,
-  //           price,
-  //           discountPrice,
-  //           quantity
-  //         )
-  //       );
-  //       setIsAdd(false);
-  //       setIsAddSuccess(true);
-  //     }
-  //   };
-
   const quantityHandler = useCallback(
     (quan) => {
-      console.log(quan);
       if (quan === "minus") {
         if (quantity > 0) {
           setQuantity(quantity - 1);
         }
-
       } else {
         setQuantity(quantity + 1);
       }
@@ -245,7 +158,7 @@ const Detailed = (props) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, marginBottom: 60 }}>
       {/* Verification Code Modal */}
       <Modal
         style={{ margin: 0, marginBottom: 0 }}
@@ -334,27 +247,11 @@ const Detailed = (props) => {
           </View>
         </View>
       </Modal>
-      {/* Modal Code ends here */}
-
-      {/* Modal Starts here */}
-      {/* <Header
-      ></Header> */}
       <ScrollView>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          {/* <View style={{ width: "80%", height: 320, backgroundColor: "red" }}>
-          <Image
-            source={require("../assets/Home/prod.png")}
-            style={{
-              width: null,
-              height: null,
-              flex: 1,
-              resizeMode: "cover"
-            }}
-          />
-        </View> */}
-          {/* require("../assets/Home/prod.png") */}
-          {/* Slider Starts here */}
-          <View style={{ width: width, height: width }}>
+        <View
+          style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}
+        >
+          <View style={{ height: width - 20, width: width }}>
             <Swiper style={styles.wrapper}>
               {productSelect.PictureModels.PictureModels.map((item, index) => (
                 <View key={index} style={styles.slide1}>
@@ -368,45 +265,6 @@ const Detailed = (props) => {
               ))}
             </Swiper>
           </View>
-          {/* Slider Starts here */}
-          {/* <ImageComp
-            imageUri={{ uri: productSelect.imageUri }}
-            width="80%"
-            height={320}
-            Icon
-          /> */}
-          {/* <View
-            style={{
-              width: "100%",
-              paddingHorizontal: 20,
-              paddingVertical: 30,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}
-          >
-            {/* <ImageComp
-              Icon
-              imageUri={require("../assets/Home/share.png")}
-              width={36}
-              height={36}
-            /> */}
-          {/* <Text
-              style={{ fontSize: 20, color: Color.primary }}
-            >{`$ ${productSelect.price}`}</Text> */}
-          {/* <ImageComp
-              onPress={() => FavHandler(productSelect)}
-              Icon
-              isLoading={isLoading}
-              imageUri={
-                productSelect.isFav
-                  ? require("../assets/Home/heart_filled.png")
-                  : require("../assets/Home/heart.png")
-              }
-              width={36}
-              height={36}
-            /> */}
-          {/* </View> */}
           <View
             style={{
               width: "90%",
@@ -431,14 +289,11 @@ const Detailed = (props) => {
               }}
             >{`${productSelect.ProductPrice.Price}`}</Text>
           </View>
-          <View
-            style={{
-              width: "90%",
-            }}
-          >
+          <View style={{ width: "90%" }}>
             <Text style={{ fontSize: 16, color: "#AFAFAF", lineHeight: 22 }}>
               {productSelect.FullDescription}
             </Text>
+
             {isAdd === true ? (
               <View
                 style={{
@@ -457,6 +312,7 @@ const Detailed = (props) => {
                 </Text>
               </View>
             ) : null}
+
             {isAddSuccess === true ? (
               <TouchableOpacity
                 onPress={() => setIsAddSuccess(false)}
@@ -482,12 +338,13 @@ const Detailed = (props) => {
               </TouchableOpacity>
             ) : null}
           </View>
-
           <View
             style={{
               width: "100%",
               height: 80,
+              flex: 1,
               backgroundColor: Color.primary,
+              // backgroundColor: "green",
               paddingHorizontal: 10,
               paddingVertical: 10,
               justifyContent: "center",
@@ -499,28 +356,25 @@ const Detailed = (props) => {
                 style={{
                   flex: 1,
                   backgroundColor: colors.Blue,
-                  paddingVertical: 28,
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  paddingHorizontal: 15,
+                  paddingHorizontal: 10,
                   borderRadius: 125,
                 }}
               >
-                <ImageComp
-                  onPress={() => quantityHandler("add")}
-                  Icon
-                  imageUri={require("../../assets/Icons/plus.png")}
-                  width={17}
-                  height={17}
-                />
-                <Text style={{ color: "white", fontSize: 19 }}>{quantity}</Text>
-                <ImageComp
-                  onPress={() => quantityHandler("minus")}
-                  Icon
-                  imageUri={require("../../assets/Icons/minus.png")}
-                  width={17}
-                  height={17}
+                <TextInput
+                  placeholder="Enter Quantity"
+                  style={{
+                    color: "#fff",
+                    flex: 1,
+                    height: "100%",
+                    fontSize: 16,
+                  }}
+                  keyboardType="number-pad"
+                  placeholderTextColor="#fff"
+                  value={quantity}
+                  onChangeText={(text) => setQuantity(text)}
                 />
               </View>
             ) : (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import ImageComp from "./Image";
-import {colors as Color} from "../../Constant";
+import {colors as Color, MaterialIcons} from "../../Constant";
 
 const SingleRadio = props => {
   const fieldSelectHandler = selectedTime => {
@@ -13,7 +13,6 @@ const SingleRadio = props => {
       style={{
         width: props.RadioRow ? "50%" : "100%",
         paddingVertical: 10,
-
         flexDirection: "row",
         alignItems: "center"
       }}
@@ -24,23 +23,16 @@ const SingleRadio = props => {
           width: props.checkout ? 32 : 30,
           height: props.checkout ? 32 : 30,
           borderColor:
-            props.selectedTime === props.whichTime ? Color.primary : "#a7a7a7",
+            props.selectedTime === props.whichTime ? Color.Blue : "#a7a7a7",
           borderWidth: 3,
           marginRight: 15,
           borderRadius: props.checkout ? 125 : null,
-          padding: 5
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         {props.selectedTime === props.whichTime ? (
-          <Image
-            style={{
-              width: null,
-              height: null,
-              flex: 1,
-              resizeMode: "center"
-            }}
-            source={require("../../assets/Icons/select.png")}
-          />
+          <MaterialIcons name="done" size={22} style={{}} color={Color.Blue} />
         ) : null}
       </TouchableOpacity>
       <Text

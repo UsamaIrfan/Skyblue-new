@@ -11,14 +11,11 @@ import {
   StyleSheet,
 } from "react-native";
 import ProductListing from "../../COMPONENTS/Products/ProductList";
-import { categories, products } from "../../DummyData/Categories";
 import { useDispatch, useSelector } from "react-redux";
-import * as productAction from "../../Redux/Action/Products";
-import { NavigationContainer, useIsFocused } from "@react-navigation/native";
-import SuccessScreen from "../../COMPONENTS/UI/SuccessScreen";
-import { colors, Ionicons, FontAwesome } from "../../Constant";
+import { useIsFocused } from "@react-navigation/native";
+import { colors, FontAwesome } from "../../Constant";
 import * as cartActions from "../../Redux/Action/Cart";
-import Loader from "../../COMPONENTS/Loader";
+import { showSimpleMessage } from "../../Redux/Action/General";
 import ProductSkull from "../../COMPONENTS/Skeletons/ProductSkull";
 import axios from "axios";
 
@@ -39,8 +36,6 @@ const Listing = ({ route, navigation }) => {
   const id = useSelector((state) => state.Auth.Login.customerId);
 
   const fetchProducts = async () => {
-    // await setTimeout(async () => {
-    // }, 250);
     setIsLoading(true);
     setProductsAvailable([]);
     await fetchProductFunc(route.params?.item.Id, 0);
@@ -53,7 +48,6 @@ const Listing = ({ route, navigation }) => {
 
   const reload = async () => {
     setPageIndex(PageIndex + 1);
-    // console.log("FIREDDDDDD");
     await addfetchProductFunc(route.params?.item.Id, PageIndex);
   };
 
@@ -121,11 +115,18 @@ const Listing = ({ route, navigation }) => {
       }
 
       const resData = await response.json();
-      Alert.alert("Successfully Add", "Product successfully add to cart");
+      showSimpleMessage("success", {
+        message: "Success",
+        description: "Added to Cart",
+      });
       await dispatch(cartActions.fetchCountCart());
     } catch (err) {
-      Alert.alert("Something went wrong!", err.message);
+      showSimpleMessage("warning", {
+        message: "Failed",
+        description: "Unable to Add to Cart",
+      });
     }
+
     setIsLoading(false);
   };
 
@@ -159,7 +160,7 @@ const Listing = ({ route, navigation }) => {
         paddingHorizontal: width * 0.03,
       }}
     >
-      <View style={{ ...styles.iconInput, zIndex: 3 }}>
+      {/* <View style={{ ...styles.iconInput, zIndex: 3 }}>
         <FontAwesome
           name="search"
           size={24}
@@ -171,6 +172,7 @@ const Listing = ({ route, navigation }) => {
           onChangeText={setSearch}
           style={{ flex: 1 }}
           placeholder="Search"
+          
         />
         <FontAwesome
           name="filter"
@@ -178,7 +180,7 @@ const Listing = ({ route, navigation }) => {
           color={colors.Blue}
           style={styles.icon}
         />
-      </View>
+      </View> */}
     </View>
   );
 

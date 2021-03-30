@@ -38,6 +38,8 @@ import DashBoardSkeleton from "../COMPONENTS/Skeletons/DashboardSkull";
 
 const mainStack = createStackNavigator();
 
+const Tab = createBottomTabNavigator();
+
 const mainNavigator = () => {
   const [AppLoading, setAppLoading] = useState(true);
   const [IsUser, setIsUser] = useState();
@@ -90,48 +92,13 @@ const mainNavigator = () => {
   }
 
   if (!IsUser) {
-    return (
-      <NavigationContainer>
-        <mainStack.Navigator>
-          <mainStack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-          <mainStack.Screen
-            name="Register"
-            component={Register}
-            options={{
-              headerTitleAlign: "center",
-              headerTitleStyle: {
-                fontFamily: "Bold",
-                fontSize: 17,
-                letterSpacing: 1,
-              },
-              headerStyle: {
-                backgroundColor: colors.Blue,
-              },
-              headerTintColor: "white",
-              headerTitle: "REGISTER",
-            }}
-          />
-          <mainStack.Screen
-            name="Home"
-            component={MainTabFunc}
-            options={{ headerShown: false }}
-          />
-        </mainStack.Navigator>
-      </NavigationContainer>
-    );
-  } else {
-    // const count = useSelector((state) => state.Cart.cartCount);
     const Tab = createBottomTabNavigator();
+
     const HomeNavigatorFunc = () => {
       const count = useSelector((state) => state.Cart.cartCount);
       return (
         <HomeNavigator.Navigator
         // initialRouteName="PriceOffer
-
         >
           <HomeNavigator.Screen
             name="HomeMain"
@@ -236,11 +203,14 @@ const mainNavigator = () => {
         </HomeNavigator.Navigator>
       );
     };
-    return (
-      <NavigationContainer>
+
+    const MainTabFunc = ({ route, navigation }) => {
+      const count = useSelector((state) => state.Cart.cartCount);
+      return (
         <Tab.Navigator
           tabBarOptions={{
             showLabel: false,
+            keyboardHidesTabBar: true,
             style: {
               position: "absolute",
               left: 0,
@@ -295,6 +265,15 @@ const mainNavigator = () => {
                 />
               ),
               tabBarButton: (props) => <TabBarCustomButton {...props} />,
+              tabBarBadge: count,
+
+              tabBarBadgeStyle: {
+                alignSelf: "center",
+                backgroundColor: colors.Blue,
+                left: "50%",
+                top: "15%",
+                width: 20,
+              },
             }}
           />
 
@@ -313,203 +292,279 @@ const mainNavigator = () => {
             }}
           />
         </Tab.Navigator>
+      );
+    };
+
+    return (
+      <NavigationContainer>
+        <mainStack.Navigator>
+          <mainStack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+          <mainStack.Screen
+            name="Register"
+            component={Register}
+            options={{
+              headerTitleAlign: "center",
+              headerTitleStyle: {
+                fontFamily: "Bold",
+                fontSize: 17,
+                letterSpacing: 1,
+              },
+              headerStyle: {
+                backgroundColor: colors.Blue,
+              },
+              headerTintColor: "white",
+              headerTitle: "REGISTER",
+            }}
+          />
+          <mainStack.Screen
+            name="Home"
+            component={MainTabFunc}
+            options={{ headerShown: false }}
+          />
+        </mainStack.Navigator>
       </NavigationContainer>
     );
+  } else {
+    // const count = useSelector((state) => state.Cart.cartCount);
+    const Tab = createBottomTabNavigator();
+
+    const MainTabFunc = ({ route, navigation }) => {
+      const count = useSelector((state) => state.Cart.cartCount);
+      return (
+        <NavigationContainer>
+          <Tab.Navigator
+            tabBarOptions={{
+              showLabel: false,
+              keyboardHidesTabBar: true,
+              style: {
+                position: "absolute",
+                left: 0,
+                bottom: 0,
+                right: 0,
+                borderTopWidth: 0,
+                backgroundColor: "transparent",
+                elevation: 0,
+              },
+            }}
+            tabBar={(props) => <CustomTabBar props={props} />}
+          >
+            <Tab.Screen
+              name="Home"
+              component={HomeNavigatorFunc}
+              options={{
+                tabBarIcon: ({ focused }) => (
+                  <Ionicons
+                    name="home-sharp"
+                    size={25}
+                    color={focused ? colors.Blue : "#000"}
+                  />
+                ),
+                tabBarButton: (props) => <TabBarCustomButton {...props} />,
+              }}
+            />
+
+            <Tab.Screen
+              name="Search"
+              component={ShopNavigatorFunc}
+              options={{
+                tabBarIcon: ({ focused }) => (
+                  <Ionicons
+                    name="search"
+                    size={25}
+                    color={focused ? colors.Blue : "#000"}
+                  />
+                ),
+                tabBarButton: (props) => <TabBarCustomButton {...props} />,
+              }}
+            />
+
+            <Tab.Screen
+              name="Like"
+              component={CheckoutNavigatorFunc}
+              options={{
+                tabBarIcon: ({ focused }) => (
+                  <Feather
+                    name="shopping-bag"
+                    size={25}
+                    color={focused ? colors.Blue : "#000"}
+                  />
+                ),
+                tabBarButton: (props) => <TabBarCustomButton {...props} />,
+                tabBarBadge: count,
+
+                tabBarBadgeStyle: {
+                  alignSelf: "center",
+                  backgroundColor: colors.Blue,
+                  left: "50%",
+                  top: "15%",
+                  width: 20,
+                },
+              }}
+            />
+
+            <Tab.Screen
+              name="User"
+              component={AccountNavigatorFunc}
+              options={{
+                tabBarIcon: ({ focused }) => (
+                  <Ionicons
+                    name="person-circle"
+                    size={25}
+                    color={focused ? colors.Blue : "#000"}
+                  />
+                ),
+                tabBarButton: (props) => <TabBarCustomButton {...props} />,
+              }}
+            />
+          </Tab.Navigator>
+        </NavigationContainer>
+      );
+    };
+    const HomeNavigatorFunc = () => {
+      const count = useSelector((state) => state.Cart.cartCount);
+      return (
+        <HomeNavigator.Navigator
+        // initialRouteName="PriceOffer
+        >
+          <HomeNavigator.Screen
+            name="HomeMain"
+            component={Home}
+            options={({ navigation }) => ({
+              headerTitleAlign: "center",
+              headerTitleStyle: {
+                fontFamily: "Bold",
+                fontSize: 17,
+                letterSpacing: 1,
+              },
+              headerStyle: {
+                backgroundColor: colors.Blue,
+              },
+              headerLeft: () => (
+                <View style={{ paddingLeft: 10 }}>
+                  <Ionicons
+                    name="qr-code"
+                    size={24}
+                    color="#fff"
+                    onPress={() => navigation.navigate("BarCode")}
+                  />
+                </View>
+              ),
+              headerTintColor: "white",
+              headerTitle: () => (
+                <View style={{ flexDirection: "row" }}>
+                  <View
+                    style={{
+                      height: "70%",
+                      justifyContent: "flex-end",
+                    }}
+                  ></View>
+                  <ImageComp
+                    Icon
+                    width={120}
+                    height={30}
+                    imageUri={require("../assets/LogoWhite.png")}
+                  />
+                </View>
+              ),
+
+              headerRight: () => (
+                <View style={{ paddingRight: 15 }}>
+                  <Ionicons
+                    name="cart-outline"
+                    size={30}
+                    color="#fff"
+                    onPress={() => navigation.navigate("Cart")}
+                  />
+
+                  <View
+                    style={{
+                      width: 15,
+                      height: 15,
+                      borderRadius: 125,
+                      backgroundColor: "white",
+                      position: "absolute",
+                      right: 10,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text style={{ fontFamily: "Regular", fontSize: 10 }}>
+                      {count}
+                    </Text>
+                  </View>
+                </View>
+              ),
+            })}
+          />
+          <HomeNavigator.Screen
+            name="Cart"
+            component={CheckoutNavigatorFunc}
+            options={{
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
+                <Feather
+                  name="shopping-bag"
+                  size={25}
+                  color={focused ? colors.Blue : "#000"}
+                />
+              ),
+              tabBarButton: (props) => <TabBarCustomButton {...props} />,
+            }}
+          />
+          <HomeNavigator.Screen
+            name="BarCode"
+            component={barCode}
+            options={{
+              headerTintColor: "white",
+              headerStyle: { backgroundColor: colors.Blue },
+              headerTitleAlign: "center",
+              headerTitleStyle: {
+                fontFamily: "Bold",
+                fontSize: 17,
+                letterSpacing: 1,
+              },
+              headerTitle: "SCAN BARCODE",
+            }}
+          />
+          <HomeNavigator.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+          <HomeNavigator.Screen
+            name="Register"
+            component={Register}
+            options={{
+              headerTitleAlign: "center",
+              headerTitleStyle: {
+                fontFamily: "Bold",
+                fontSize: 17,
+                letterSpacing: 1,
+              },
+              headerStyle: {
+                backgroundColor: colors.Blue,
+              },
+              headerTintColor: "white",
+              headerTitle: "REGISTER",
+            }}
+          />
+          <HomeNavigator.Screen
+            name="Home"
+            component={MainTabFunc}
+            options={{ headerShown: false }}
+          />
+        </HomeNavigator.Navigator>
+      );
+    };
+    return <MainTabFunc />;
   }
 };
 
 const HomeNavigator = createStackNavigator();
-
-export const HomeNavigatorFunc = () => {
-  const count = useSelector((state) => state.Cart.cartCount);
-  return (
-    <HomeNavigator.Navigator
-    // initialRouteName="PriceOffer
-    >
-      <HomeNavigator.Screen
-        name="HomeMain"
-        component={Home}
-        options={({ navigation }) => ({
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            fontFamily: "Bold",
-            fontSize: 17,
-            letterSpacing: 1,
-          },
-          headerStyle: {
-            backgroundColor: colors.Blue,
-          },
-          headerLeft: () => (
-            <View style={{ paddingLeft: 10 }}>
-              <Ionicons
-                name="qr-code"
-                size={24}
-                color="#fff"
-                onPress={() => navigation.navigate("BarCode")}
-              />
-            </View>
-          ),
-          headerTintColor: "white",
-          headerTitle: () => (
-            <View style={{ flexDirection: "row" }}>
-              <View
-                style={{
-                  height: "70%",
-                  justifyContent: "flex-end",
-                }}
-              ></View>
-              <ImageComp
-                Icon
-                width={120}
-                height={30}
-                imageUri={require("../assets/LogoWhite.png")}
-              />
-            </View>
-          ),
-
-          headerRight: () => (
-            <View style={{ paddingRight: 15 }}>
-              <Ionicons
-                name="cart-outline"
-                size={30}
-                color="#fff"
-                onPress={() => navigation.navigate("Cart")}
-              />
-
-              <View
-                style={{
-                  width: 15,
-                  height: 15,
-                  borderRadius: 125,
-                  backgroundColor: "white",
-                  position: "absolute",
-                  right: 10,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text style={{ fontFamily: "Regular", fontSize: 10 }}>
-                  {count}
-                </Text>
-              </View>
-            </View>
-          ),
-        })}
-      />
-      <HomeNavigator.Screen
-        name="Cart"
-        component={CheckoutNavigatorFunc}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Feather
-              name="shopping-bag"
-              size={25}
-              color={focused ? colors.Blue : "#000"}
-            />
-          ),
-          tabBarButton: (props) => <TabBarCustomButton {...props} />,
-        }}
-      />
-      <HomeNavigator.Screen
-        name="BarCode"
-        component={barCode}
-        options={{
-          headerTintColor: "white",
-          headerStyle: { backgroundColor: colors.Blue },
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            fontFamily: "Bold",
-            fontSize: 17,
-            letterSpacing: 1,
-          },
-          headerTitle: "SCAN BARCODE",
-        }}
-      />
-    </HomeNavigator.Navigator>
-  );
-};
-
-const Tab = createBottomTabNavigator();
-
-const MainTabFunc = ({ route, navigation }) => {
-  return (
-    <Tab.Navigator
-      tabBarOptions={{
-        showLabel: false,
-        style: {
-          position: "absolute",
-          left: 0,
-          bottom: 0,
-          right: 0,
-          borderTopWidth: 0,
-          backgroundColor: "transparent",
-          elevation: 0,
-        },
-      }}
-      tabBar={(props) => <CustomTabBar props={props} />}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeNavigatorFunc}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name="home-sharp"
-              size={25}
-              color={focused ? colors.Blue : "#000"}
-            />
-          ),
-          tabBarButton: (props) => <TabBarCustomButton {...props} />,
-        }}
-      />
-
-      <Tab.Screen
-        name="Search"
-        component={ShopNavigatorFunc}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name="search"
-              size={25}
-              color={focused ? colors.Blue : "#000"}
-            />
-          ),
-          tabBarButton: (props) => <TabBarCustomButton {...props} />,
-        }}
-      />
-
-      <Tab.Screen
-        name="Like"
-        component={CheckoutNavigatorFunc}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Feather
-              name="shopping-bag"
-              size={25}
-              color={focused ? colors.Blue : "#000"}
-            />
-          ),
-          tabBarButton: (props) => <TabBarCustomButton {...props} />,
-        }}
-      />
-
-      <Tab.Screen
-        name="User"
-        component={AccountNavigatorFunc}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name="person-circle"
-              size={25}
-              color={focused ? colors.Blue : "#000"}
-            />
-          ),
-          tabBarButton: (props) => <TabBarCustomButton {...props} />,
-        }}
-      />
-    </Tab.Navigator>
-  );
-};
 
 export default mainNavigator;
 
@@ -539,6 +594,7 @@ const TabBarCustomButton = ({ accessibilityState, children, onPress }) => {
             height: 50,
             borderRadius: 25,
             backgroundColor: "#FFF",
+            overflow: "hidden",
           }}
           onPress={onPress}
         >

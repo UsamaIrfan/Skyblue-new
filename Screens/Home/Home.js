@@ -7,22 +7,20 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   FlatList,
-  AsyncStorage,
-  TextInput,
-  Alert,
 } from "react-native";
 import Swiper from "react-native-swiper";
 import ImageComp from "../../COMPONENTS/UI/Image";
 import ProductListing from "../../COMPONENTS/Products/ProductList";
-import { categories, products } from "../../DummyData/Categories";
 import { useSelector, useDispatch } from "react-redux";
 import * as productAction from "../../Redux/Action/Products";
-import { colors, Ionicons, FontAwesome } from "../../Constant";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import { colors} from "../../Constant";
 import * as authActions from "../../Redux/Action/Auth";
+import {showSimpleMessage} from "../../Redux/Action/General";
 import * as cartActions from "../../Redux/Action/Cart";
 import { useIsFocused } from "@react-navigation/native";
 import List from "../../COMPONENTS/List/index";
+import axios from "axios";
+
 const { width, height } = Dimensions.get("window");
 
 const Home = ({ navigation }) => {
@@ -112,13 +110,45 @@ const Home = ({ navigation }) => {
     </React.Fragment>
   );
 
+
+  const userId = useSelector((state) => state.Auth.Login.customerId);
+
+    // ADD TO CART HANDLER
+    const addToCardHandler = async (item) => {
+      setIsLoading(true);
+  
+      try {
+        const response = await fetch(
+          `http://skybluewholesale.com:80/api/CatalogApi/AddProductToCart?customerId=${userId}&productId=${item.ProductPrice.ProductId}&quantity=1`,
+          {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+            },
+          }
+          );
+          
+        if (!response.ok) {
+          throw new Error("Something Went Wrong");
+        }
+        
+        const resData = await response.json();
+        showSimpleMessage("success", {message: "Success", description: "Added to Cart"})
+        await dispatch(cartActions.fetchCountCart());
+      } catch (err) {
+        showSimpleMessage("warning", {message: "Unable to Add to Cart", description: `${err.message}`})
+      }
+  
+      setIsLoading(false);
+    };
+
   const renderItem = ({ item, index }) => (
     <React.Fragment>
       {/* {console.log("RECENT =====>", item)} */}
       <ProductListing
         item={item}
         Listing
-        onPress={() => navigation.navigate("Detailed", { item: item })}
+        onPress={() => navigation.navigate("Search", {screen: "Detailed",params:{ item: item }})}
         key={index}
         imageUri={{
           uri: item?.PictureModels?.PictureModels[0].ImageUrl,
@@ -129,7 +159,7 @@ const Home = ({ navigation }) => {
         imageUriSec={require("../../assets/Icons/shopping-bag.png")}
         widthSec={20}
         heightSec={20}
-        // onPressSec={() => addToCardHandler(item)}
+        onPressSec={() => addToCardHandler(item)}
       />
     </React.Fragment>
   );
@@ -177,31 +207,7 @@ const Home = ({ navigation }) => {
   const Header = () => {
     return (
       <>
-        <View
-          style={{
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingHorizontal: width * 0.03,
-          }}
-        >
-          <View style={{ ...styles.iconInput, zIndex: 3 }}>
-            <FontAwesome
-              name="search"
-              size={24}
-              color={colors.Blue}
-              style={styles.icon}
-            />
-            <TextInput style={{ flex: 1 }} placeholder="Search" />
-            <FontAwesome
-              name="filter"
-              size={24}
-              color={colors.Blue}
-              style={styles.icon}
-            />
-          </View>
-        </View>
-        <View style={{ width: width, height: 150, marginBottom: 10 }}>
+        <View style={{ width: width, height: 150, marginBottom: 10, marginTop: width * 0.03 }}>
           <Swiper autoplayTimeout={1.5} autoplay={true} style={styles.wrapper}>
             {sliderImages.map((item, index) => (
               <View key={index} style={styles.slide1}>
@@ -240,7 +246,7 @@ const Home = ({ navigation }) => {
       <FlatList
         data={categoriesFetch}
         renderItem={renderCats}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index.toString()}
         horizontal={false}
         numColumns={2}
         removeClippedSubviews={true}
