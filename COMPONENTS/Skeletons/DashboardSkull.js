@@ -5,7 +5,6 @@ import {
   Text,
   View,
   Dimensions,
-  ColorPropType,
 } from "react-native";
 import { colors } from "../../Constant";
 
@@ -13,7 +12,7 @@ const ProductSkull = () => {
   const { height, width } = Dimensions.get("window");
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 , alignItems: "center"}}>
       <ContentLoader
         backgroundColor="#ccc"
         foregroundColor={colors.Blue}
@@ -44,6 +43,7 @@ const ProductSkull = () => {
             <Rect x={'0'} y={height - 50} rx="5" ry="5" width={width} height="100" />
         </View>
       </ContentLoader>
+        <Text style={{fontSize: 11, color: "#000", fontFamily: "Regular", position: "absolute", bottom: 0, zIndex: 99999999999,}} >V .1.0.0</Text>
     </View>
   );
 };

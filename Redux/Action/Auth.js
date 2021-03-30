@@ -60,24 +60,25 @@ export const registrationFunc = (
   CountryId,
   StateId
 ) => {
-  var postData = {
-    Id: 0,
-    FirstName: FirstName,
-    LastName: LastName,
-    CompanyName: CompanyName,
-    StreetAddress: StreetAddress,
-    StreetAddress2: StreetAddress2,
-    PostalCode: PostalCode,
-    City: City,
-    Phone: Phone,
-    Email: Email,
-    Password: Password,
-    ConfirmPassword: ConfirmPassword,
-    CountryId: CountryId,
-    StateId: StateId,
-  };
-
+  
   return async (dispatch) => {
+    const id = getState().Auth.Login.customerId;
+    var postData = {
+      Id: id,
+      FirstName: FirstName,
+      LastName: LastName,
+      CompanyName: CompanyName,
+      StreetAddress: StreetAddress,
+      StreetAddress2: StreetAddress2,
+      PostalCode: PostalCode,
+      City: City,
+      Phone: Phone,
+      Email: Email,
+      Password: Password,
+      ConfirmPassword: ConfirmPassword,
+      CountryId: CountryId,
+      StateId: StateId,
+    };
     await axios
       .post(`${Api}api/AccountApi/Register`, postData, {
         headers: { "Content-Type": "application/json" },
@@ -134,9 +135,11 @@ export const profileEditHandler = (
   ConfirmPassword,
   CountryId,
   StateId
-) => {
-  var postData = {
-    Id: 0,
+  ) => {
+  return async (dispatch, getState) => {
+    const id = getState().Auth.Login.customerId;
+    var postData = {
+    Id: id,
     FirstName: FirstName,
     LastName: LastName,
     CompanyName: CompanyName,
@@ -152,8 +155,7 @@ export const profileEditHandler = (
     StateId: StateId,
   };
 
-  return async (dispatch) => {
-    await axios
+  await axios
       .post(`${Api}api/AccountApi/EditInfo`, postData, {
         headers: { "Content-Type": "application/json" },
       })

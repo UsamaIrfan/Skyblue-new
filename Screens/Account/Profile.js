@@ -274,11 +274,11 @@ const UserInfo = ({ navigation, route }) => {
   
       showSimpleMessage("success", {message: "Success", description: "Profile Updated Successfully."})
     } catch (err) {
-      showSimpleMessage("warning", {message: "Failed", description: `${err.message}`})
+      showSimpleMessage("danger", {message: "Failed", description: `${err.message}`})
       setIsLoading(false);
       }
     } else {
-      console.log("not work");
+      showSimpleMessage("danger", {message: "Failed", description: `${err.message}`})
     }
   };
 
@@ -296,83 +296,8 @@ const UserInfo = ({ navigation, route }) => {
   const ConfirmPassword = createRef(null);
   const Gender = createRef(null);
 
-  // // Start Code for Pick Image
-  // // Image Upload Handler
-  // const pickImage = async () => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 0.5,
-  //     base64: true,
-  //   });
-
-  //   // console.log(result);
-
-  //   const manipResult = await ImageManipulator.manipulateAsync(
-  //     result.uri,
-  //     [{ resize: { width: 250 } }],
-  //     { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG, base64: true }
-  //   );
-  //   console.log(manipResult);
-
-  //   // console.log(result.base64);
-
-  //   if (!result.cancelled) {
-  //     setImage(manipResult.uri);
-  //   }
-
-  //   // TO GET IMAGE NAME AND IMAGE TYPE
-  //   let localUri = manipResult.uri;
-
-  //   let filename = localUri.split("/").pop();
-  //   console.log(filename);
-
-  //   // // Infer the type of the image
-  //   let match = /\.(\w+)$/.exec(filename);
-  //   let type = match ? `image/${match[1]}` : `image`;
-  //   console.log(type);
-
-  //   setImageUri(manipResult.base64);
-  //   setImageName(filename);
-  //   setImageType(type);
-
-  // // SERVER CODE START FROM HERE
-  // try {
-  //   const response = await fetch(
-  //     `${Api}api/agent/add-agent-logo/${agendId}`,
-  //     {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-type": "application/json",
-  //         Authorization: "Bearer " + token,
-  //       },
-  //       body: JSON.stringify({
-  //         agentId: agendId,
-  //         clientId: 0,
-  //         documentId: 0,
-  //         name: filename,
-  //         type: type,
-  //         uri: `data:${type}; base64,${manipResult.base64}`,
-  //       }),
-  //     }
-  //   );
-
-  //   if (!response.ok) {
-  //     throw new Error("Something Went Wrong");
-  //   }
-
-  //   const resData = await response.json();
-  //   console.log(resData);
-  // } catch (err) {
-  //   console.log(err.message);
-  //   throw err;
-  // }
-  // };
-  // End Code for Pick Image
-
   return (
-    <View style={{ flex: 1, backgroundColor: "white", paddingTop: 10, marginBottom: 60, }}>
+    <View style={{ flex: 1, backgroundColor: "white", paddingTop: 10}}>
       {/* This Modal is for COuntry and state */}
       <Modal
         style={{ margin: 0, marginBottom: 0 }}
@@ -386,7 +311,7 @@ const UserInfo = ({ navigation, route }) => {
         // hideModalContentWhileAnimating={true}
       >
         {isVisible === true ? (
-          <View style={{ flex: 1, justifyContent: "flex-end", width: "100%" }}>
+          <View style={{ flex: 1, justifyContent: "flex-end", width: "100%", marginBottom: 60,  }}>
             <View
               style={{
                 width: "100%",
@@ -1138,7 +1063,7 @@ const UserInfo = ({ navigation, route }) => {
           
           </View> */}
 
-          <View style={{ width: "100%", alignItems: "center", marginTop: 20 }}>
+          <View style={{ width: "100%", alignItems: "center", marginTop: 20, marginBottom: 60, }}>
             <TouchableOpacity
               disabled={!inputState.formisValid}
               // onPress={() => navigation.navigate("ClientDrawer")}

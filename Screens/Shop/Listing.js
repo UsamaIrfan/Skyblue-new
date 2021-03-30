@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
-  TextInput,
   Dimensions,
-  ActivityIndicator,
-  Alert,
   FlatList,
   StyleSheet,
 } from "react-native";

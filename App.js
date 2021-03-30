@@ -18,6 +18,7 @@ import { Provider } from "react-redux";
 import cartReducer from "./Redux/Reducers/Cart";
 import authReducer from "./Redux/Reducers/Auth";
 import productReducer from "./Redux/Reducers/Product";
+import { colors } from "./Constant";
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -48,7 +49,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <MainNavigator>
-        <StatusBar style="auto" />
+        <StatusBar style="auto" light backgroundColor={colors.Blue} />
       </MainNavigator>
       <FlashMessage />
     </Provider>
